@@ -3,85 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CFO Executive OS</title>
+    <title>Personal CEO | Mega Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;400;700;900&display=swap');
-        body { background-color: #030712; color: #f3f4f6; font-family: 'Inter', sans-serif; }
+        body { background-color: #020617; color: #f1f5f9; font-family: 'Inter', sans-serif; }
         .executive-header { font-family: 'Orbitron', sans-serif; }
-        .glass { background: rgba(17, 24, 39, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
-        .kpi-card { transition: transform 0.3s ease; border-top: 4px solid transparent; }
-        .kpi-card:hover { transform: translateY(-5px); }
-        .view-hidden { display: none; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
+        .input-card { background: linear-gradient(145deg, #0f172a, #1e293b); border-right: 4px solid #3b82f6; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
     </style>
 </head>
-<body class="p-4 lg:p-10">
+<body class="p-4 lg:p-8">
 
-    <div class="max-w-7xl mx-auto space-y-8">
-        <div class="flex justify-between items-center">
-            <h1 class="executive-header text-2xl font-black tracking-widest text-white uppercase">CFO <span class="text-blue-500">PRO</span></h1>
-            <div class="flex bg-slate-900/50 p-1 rounded-2xl border border-slate-800">
-                <button onclick="showPage('input')" id="btn-input" class="px-8 py-2 rounded-xl font-black text-xs transition-all bg-blue-600 text-white shadow-lg">INPUT</button>
-                <button onclick="showPage('strategy')" id="btn-strategy" class="px-8 py-2 rounded-xl font-black text-xs transition-all text-slate-400">STRATEGY</button>
-            </div>
-        </div>
+    <div class="max-w-[1600px] mx-auto">
+        <header class="mb-8 flex justify-between items-center">
+            <h1 class="executive-header text-2xl font-black tracking-[0.3em] text-white">SYSTEM <span class="text-blue-500">CFO</span></h1>
+            <div id="loading" class="text-xs text-blue-400 animate-pulse font-bold uppercase tracking-widest">Sincronizare date...</div>
+        </header>
 
-        <div id="page-input" class="max-w-2xl mx-auto">
-            <div class="glass p-8 shadow-2xl border-t-blue-500/50 border-t-4">
-                <h2 class="executive-header text-lg font-bold mb-8 text-center tracking-widest text-blue-400">Logare Capital</h2>
-                <form id="financeForm" onsubmit="handleForm(event)" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <input type="date" id="date" required class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 outline-none focus:border-blue-500">
-                        <input type="number" id="amount" step="0.01" placeholder="SUMA (RON)" required class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 font-black text-emerald-400 text-xl">
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <select id="type" onchange="syncUI()" class="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                            <option value="Cheltuială">Cheltuială Operativă</option>
-                            <option value="Venit Fix (Salariu)">Venit Fix (Salariu)</option>
-                            <option value="Cheltuială Fixă (Lunară)">Cheltuială Fixă (Chirie/Rată)</option>
-                            <option value="Investiție">Investiție / Wealth</option>
-                            <option value="Cheltuială Viitoare">Viitor (Nuntă/Mașină)</option>
-                        </select>
-                        <select id="category" class="bg-slate-800/50 p-4 rounded-xl border border-slate-700"></select>
-                    </div>
-                    <button type="submit" id="subBtn" class="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-2xl font-black text-white tracking-[0.2em] shadow-xl shadow-blue-900/40">EXECUTĂ TRANZACȚIE</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="page-strategy" class="view-hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass p-8 kpi-card border-t-blue-500 text-center">
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Venit Total Martie</p>
-                    <p class="text-3xl font-black text-white" id="stat-income">0 RON</p>
-                </div>
-                <div class="glass p-8 kpi-card border-t-rose-500 text-center">
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Obligații (Fixe + Planificat)</p>
-                    <p class="text-3xl font-black text-rose-500" id="stat-locked">0 RON</p>
-                </div>
-                <div class="glass p-8 kpi-card border-t-emerald-500 text-center ring-4 ring-emerald-500/20">
-                    <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Aer Liber (Safe to Spend)</p>
-                    <p class="text-4xl font-black text-emerald-400" id="stat-free">0 RON</p>
+            <div class="lg:col-span-3">
+                <div class="glass input-card p-6 sticky top-8">
+                    <h2 class="executive-header text-sm font-bold mb-6 text-blue-400 tracking-widest uppercase">Input Capital</h2>
+                    <form id="financeForm" onsubmit="handleForm(event)" class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Data Calendaristică</label>
+                            <input type="date" id="date" required class="w-full bg-slate-800/50 p-3 rounded-xl border border-slate-700 outline-none focus:border-blue-500 mt-1">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Sumă RON</label>
+                            <input type="number" id="amount" step="0.01" placeholder="0.00" required class="w-full bg-slate-800/50 p-3 rounded-xl border border-slate-700 font-black text-emerald-400 text-lg outline-none">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Tip Tranzacție</label>
+                            <select id="type" onchange="syncUI()" class="w-full bg-slate-800/50 p-3 rounded-xl border border-slate-700 outline-none mt-1">
+                                <option value="Cheltuială">Cheltuială (Acum)</option>
+                                <option value="Venit Fix (Salariu)">Salariu (Lunar)</option>
+                                <option value="Cheltuială Fixă (Lunară)">Fixe (Chirie/Rată)</option>
+                                <option value="Investiție">Investiție / Wealth</option>
+                                <option value="Cheltuială Viitoare">Viitor (Planificat)</option>
+                                <option value="Venit">Venit (Ocazional)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Categorie</label>
+                            <select id="category" class="w-full bg-slate-800/50 p-3 rounded-xl border border-slate-700 outline-none mt-1"></select>
+                        </div>
+                        <button type="submit" id="subBtn" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-black text-white tracking-widest transition-all mt-4 shadow-lg shadow-blue-900/20">EXECUTĂ</button>
+                    </form>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="glass p-8">
-                    <h3 class="executive-header text-xs font-bold text-slate-500 uppercase mb-8 tracking-widest">Revenue vs OPEX (Trends)</h3>
-                    <div class="h-80"><canvas id="mainChart"></canvas></div>
+            <div class="lg:col-span-9 space-y-8">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass p-6 border-b-4 border-blue-500">
+                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Venit Total</p>
+                        <p class="text-3xl font-black text-white" id="stat-income">0 RON</p>
+                    </div>
+                    <div class="glass p-6 border-b-4 border-rose-500">
+                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Cheltuieli & Blocări</p>
+                        <p class="text-3xl font-black text-rose-500" id="stat-locked">0 RON</p>
+                    </div>
+                    <div class="glass p-6 border-b-4 border-emerald-500 bg-emerald-500/5">
+                        <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Aer Liber (Safe to Spend)</p>
+                        <p class="text-4xl font-black text-emerald-400" id="stat-free">0 RON</p>
+                    </div>
                 </div>
-                <div class="glass p-8">
-                    <h3 class="executive-header text-xs font-bold text-slate-500 uppercase mb-8 tracking-widest">Capital Clusters (Real-Time)</h3>
-                    <div class="h-80 flex justify-center"><canvas id="clusterChart"></canvas></div>
-                </div>
-            </div>
 
-            <div class="glass p-8">
-                <h3 class="executive-header text-xs font-bold text-slate-500 uppercase mb-6 tracking-widest">Planificare Viitor (Sinking Funds)</h3>
-                <div id="sinkingList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm font-bold"></div>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <div class="glass p-8">
+                        <h3 class="executive-header text-[10px] font-bold text-slate-500 uppercase mb-8 tracking-widest">Revenue vs OPEX (Annual View)</h3>
+                        <div class="h-72"><canvas id="mainChart"></canvas></div>
+                    </div>
+                    <div class="glass p-8">
+                        <h3 class="executive-header text-[10px] font-bold text-slate-500 uppercase mb-8 tracking-widest">Capital Clusters (Real-Time)</h3>
+                        <div class="h-72 flex justify-center"><canvas id="clusterChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <div class="glass p-8">
+                        <h3 class="executive-header text-[10px] font-bold text-slate-500 uppercase mb-8 tracking-widest">Monthly Expense Pressure (Heatmap)</h3>
+                        <div class="h-72"><canvas id="pressureChart"></canvas></div>
+                    </div>
+                    <div class="glass p-8">
+                        <h3 class="executive-header text-[10px] font-bold text-slate-500 uppercase mb-6 tracking-widest">Planificare Viitor (Sinking Funds)</h3>
+                        <div id="sinkingList" class="space-y-3 max-h-[280px] overflow-y-auto pr-2"></div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -93,17 +108,15 @@
             "Venit Fix (Salariu)": ["Salariu Bază"],
             "Cheltuială Fixă (Lunară)": ["Chirie", "Credit/Rată", "Utilități", "Abonamente"],
             "Investiție": ["Bursă/ETF", "Crypto", "Business"],
-            "Cheltuială Viitoare": ["Mașină (RCA/Revizii)", "Nunți/Evenimente", "Vacanțe"]
+            "Cheltuială Viitoare": ["Mașină (RCA/Revizii)", "Nunți/Evenimente", "Vacanțe"],
+            "Venit": ["Freelance", "Bonus", "Altele"]
         };
 
-        Chart.register(ChartDataLabels); // Activăm plugin-ul de etichete
+        Chart.register(ChartDataLabels);
 
         function showPage(p) {
-            document.getElementById('page-input').classList.toggle('view-hidden', p !== 'input');
-            document.getElementById('page-strategy').classList.toggle('view-hidden', p !== 'strategy');
-            document.getElementById('btn-input').className = p === 'input' ? "px-8 py-2 rounded-xl font-black text-xs transition-all bg-blue-600 text-white shadow-lg" : "px-8 py-2 rounded-xl font-black text-xs transition-all text-slate-400";
-            document.getElementById('btn-strategy').className = p === 'strategy' ? "px-8 py-2 rounded-xl font-black text-xs transition-all bg-blue-600 text-white shadow-lg" : "px-8 py-2 rounded-xl font-black text-xs transition-all text-slate-400";
-            if(p === 'strategy') loadData();
+            // Nu mai e nevoie de switch, dar păstrăm funcția pentru consistență
+            loadData();
         }
 
         function syncUI() {
@@ -112,69 +125,85 @@
             catSel.innerHTML = (CATS[type] || CATS["Cheltuială"]).map(c => `<option value="${c}">${c}</option>`).join('');
         }
         syncUI();
+        document.getElementById('date').valueAsDate = new Date();
 
         let charts = {};
 
         async function loadData() {
-            const res = await fetch(API_URL);
-            const d = await res.json();
-            
-            // Update KPIs
-            document.getElementById('stat-income').innerText = d.summary.income.toFixed(0) + " RON";
-            document.getElementById('stat-locked').innerText = (d.summary.fixed + d.summary.sinking).toFixed(0) + " RON";
-            document.getElementById('stat-free').innerText = d.summary.free.toFixed(0) + " RON";
+            document.getElementById('loading').classList.remove('hidden');
+            try {
+                const res = await fetch(API_URL);
+                const d = await res.json();
+                
+                document.getElementById('stat-income').innerText = Math.round(d.summary.income) + " RON";
+                document.getElementById('stat-locked').innerText = Math.round(d.summary.fixed + d.summary.sinking) + " RON";
+                document.getElementById('stat-free').innerText = Math.round(d.summary.free) + " RON";
 
-            renderCharts(d);
-            renderSinking(d.sinking);
+                renderCharts(d);
+                renderSinking(d.sinking);
+            } catch(e) { console.error(e); }
+            document.getElementById('loading').classList.add('hidden');
         }
 
         function renderCharts(d) {
-            // Chart Principal: Revenue vs OPEX
+            const commonOptions = {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    datalabels: {
+                        color: '#fff', font: { weight: 'bold', size: 10 },
+                        formatter: (v) => v > 0 ? Math.round(v) : '',
+                        anchor: 'end', align: 'top', offset: 4
+                    },
+                    legend: { display: false }
+                }
+            };
+
+            // 1. Line Chart: Revenue vs OPEX
             if(charts.main) charts.main.destroy();
             charts.main = new Chart(document.getElementById('mainChart'), {
                 type: 'line',
                 data: {
                     labels: ['Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun', 'Iul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [
-                        { label: 'REVENUE', data: d.charts.incArr, borderColor: '#10b981', backgroundColor: '#10b981', tension: 0.3, pointRadius: 5 },
-                        { label: 'OPEX', data: d.charts.expArr, borderColor: '#f43f5e', backgroundColor: '#f43f5e', tension: 0.3, pointRadius: 5 }
+                        { label: 'REVENUE', data: d.charts.incArr, borderColor: '#10b981', backgroundColor: '#10b981', tension: 0.3, pointRadius: 4 },
+                        { label: 'OPEX', data: d.charts.expArr, borderColor: '#f43f5e', backgroundColor: '#f43f5e', tension: 0.3, pointRadius: 4 }
                     ]
                 },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        datalabels: { color: '#fff', align: 'top', font: { weight: 'bold', size: 10 }, formatter: (v) => v > 0 ? v : '' }
-                    },
-                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#64748b' } } }
-                }
+                options: { ...commonOptions }
             });
 
-            // Chart Clusters
+            // 2. Doughnut Chart: Clusters
             if(charts.cluster) charts.cluster.destroy();
             charts.cluster = new Chart(document.getElementById('clusterChart'), {
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(d.charts.clusters),
-                    datasets: [{
-                        data: Object.values(d.charts.clusters),
-                        backgroundColor: ['#3b82f6', '#fbbf24', '#f43f5e', '#10b981'],
-                        borderWidth: 0
-                    }]
+                    datasets: [{ data: Object.values(d.charts.clusters), backgroundColor: ['#3b82f6', '#fbbf24', '#f43f5e', '#10b981'], borderWidth: 0 }]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false, cutout: '70%',
+                    ...commonOptions, cutout: '75%',
                     plugins: {
                         legend: { display: false },
                         datalabels: {
-                            color: '#fff', font: { weight: 'bold', size: 11 },
-                            formatter: (value, ctx) => {
-                                let label = ctx.chart.data.labels[ctx.dataIndex];
-                                return value > 0 ? label + ": " + value : '';
-                            },
-                            anchor: 'end', align: 'end', offset: 10
+                            color: '#fff', font: { weight: '900', size: 10 },
+                            formatter: (v, ctx) => v > 0 ? ctx.chart.data.labels[ctx.dataIndex] + "\n" + Math.round(v) : '',
+                            anchor: 'end', align: 'end', offset: 15
                         }
                     }
+                }
+            });
+
+            // 3. Bar Chart: Monthly Expense Pressure
+            if(charts.pressure) charts.pressure.destroy();
+            charts.pressure = new Chart(document.getElementById('pressureChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun', 'Iul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{ data: d.charts.expArr, backgroundColor: 'rgba(59, 130, 246, 0.5)', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 8 }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#64748b' } } }
                 }
             });
         }
@@ -182,11 +211,14 @@
         function renderSinking(sinking) {
             const list = document.getElementById('sinkingList');
             list.innerHTML = sinking.map(s => `
-                <div class="bg-slate-800/40 p-4 rounded-2xl border border-slate-700">
-                    <div class="text-blue-400 uppercase text-[10px] tracking-widest">${s.name}</div>
-                    <div class="flex justify-between items-baseline mt-1">
-                        <div class="text-xl text-white">${s.monthly} <span class="text-xs text-slate-500">RON/lună</span></div>
-                        <div class="text-xs text-slate-500">din ${s.total}</div>
+                <div class="bg-slate-800/30 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <div class="text-[9px] font-black text-blue-500 uppercase tracking-widest">${s.name}</div>
+                        <div class="text-xs text-slate-400">Target: ${s.total} RON</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm font-black text-white">${s.monthly} RON</div>
+                        <div class="text-[9px] text-slate-500 uppercase">/ Lună</div>
                     </div>
                 </div>
             `).join('');
@@ -200,8 +232,13 @@
                 category: document.getElementById('category').value, amount: document.getElementById('amount').value
             };
             await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-            alert("Tranzacție Confirmată."); location.reload();
+            btn.disabled = false; btn.innerText = "EXECUTĂ";
+            document.getElementById('financeForm').reset();
+            document.getElementById('date').valueAsDate = new Date();
+            loadData();
         }
+
+        loadData(); // Auto-load la pornire
     </script>
 </body>
 </html>
