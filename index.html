@@ -8,493 +8,196 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;700&display=swap');
-
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&family=JetBrains+Mono:wght@400;600&display=swap');
         :root {
-            --bg-primary: #FAF9F7;
-            --bg-card: #FFFFFF;
-            --bg-card-hover: #F5F3F0;
-            --border: #E8E5E0;
-            --border-accent: #D9D5CE;
-            --text-primary: #1A1915;
-            --text-secondary: #6B6560;
-            --text-muted: #9C9690;
-            --green: #1A8754;
-            --green-dim: #15703F;
-            --green-bg: rgba(26,135,84,0.07);
-            --red: #D93025;
-            --red-dim: #B3261E;
-            --red-bg: rgba(217,48,37,0.06);
-            --blue: #4A6CF7;
-            --blue-bg: rgba(74,108,247,0.07);
-            --amber: #C47F17;
-            --amber-bg: rgba(196,127,23,0.07);
-            --purple: #8B5CF6;
-            --purple-bg: rgba(139,92,246,0.07);
-            --accent: #D97706;
-            --surface-warm: #F0EDE8;
+            --bg-primary: #F7F5F0; --bg-secondary: #EFECE5; --bg-card: #FFFFFF; --bg-card-hover: #FAFAF8;
+            --border: #E2DED6; --border-accent: #D4CFC5;
+            --text-primary: #292524; --text-secondary: #78716C; --text-muted: #A8A29E;
+            --green: #15803D; --green-bg: rgba(21,128,61,0.06);
+            --red: #DC2626; --red-bg: rgba(220,38,38,0.05);
+            --blue: #2563EB; --blue-bg: rgba(37,99,235,0.05);
+            --amber: #B45309; --amber-bg: rgba(180,83,9,0.06);
+            --purple: #7C3AED; --purple-bg: rgba(124,58,237,0.05);
+            --sand: #D6CFC4; --warm-accent: #C2956B;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: 'DM Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
-
-        .font-serif { font-family: 'Instrument Serif', serif; }
+        body { background: var(--bg-primary); color: var(--text-primary); font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        .font-serif { font-family: 'Newsreader', serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-
-        /* Subtle warm texture */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            transition: all 0.2s ease;
-            position: relative;
-            z-index: 1;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
-        }
-        .card:hover { border-color: var(--border-accent); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-
-        .card-flush {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            position: relative;
-            z-index: 1;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        }
-
-        .stat-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-
-        .label {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .pill {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 10px;
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-        }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+        .card:hover { border-color: var(--border-accent); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .card-flush { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-weight: 600; letter-spacing: -0.03em; }
+        .label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+        .pill { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 100px; font-size: 10px; font-weight: 700; }
         .pill-green { background: var(--green-bg); color: var(--green); }
         .pill-red { background: var(--red-bg); color: var(--red); }
         .pill-blue { background: var(--blue-bg); color: var(--blue); }
         .pill-amber { background: var(--amber-bg); color: var(--amber); }
         .pill-purple { background: var(--purple-bg); color: var(--purple); }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-        /* Tab navigation */
-        .tab-btn {
-            padding: 8px 16px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-muted);
-            border: 1px solid transparent;
-            border-radius: 10px;
-            cursor: pointer;
-            background: transparent;
-            transition: all 0.2s;
-            letter-spacing: 0.02em;
-        }
-        .tab-btn:hover { color: var(--text-secondary); }
-        .tab-btn.active {
-            background: var(--bg-card);
-            border-color: var(--border);
-            color: var(--text-primary);
-        }
-
-        /* Input styling */
-        .input-field {
-            width: 100%;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 14px;
-            color: var(--text-primary);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .input-field:focus { border-color: var(--blue); }
+        ::-webkit-scrollbar-thumb { background: var(--sand); border-radius: 10px; }
+        .tab-btn { padding: 7px 14px; font-size: 12px; font-weight: 600; color: var(--text-muted); border: 1px solid transparent; border-radius: 10px; cursor: pointer; background: transparent; transition: all 0.2s; }
+        .tab-btn:hover { color: var(--text-secondary); background: var(--bg-secondary); }
+        .tab-btn.active { background: var(--bg-card); border-color: var(--border); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .input-field { width: 100%; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; color: var(--text-primary); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+        .input-field:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
         .input-field::placeholder { color: var(--text-muted); }
-
-        select.input-field { cursor: pointer; appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2352525b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 12px center;
-        }
+        select.input-field { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23A8A29E' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
         select.input-field option { background: var(--bg-card); color: var(--text-primary); }
-
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.5; }
-
-        .btn-primary {
-            width: 100%;
-            padding: 12px;
-            background: var(--blue);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 700;
-            font-size: 12px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-primary:hover { filter: brightness(1.15); }
-        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-
-        .btn-danger {
-            background: var(--red-bg);
-            color: var(--red);
-            border: 1px solid rgba(239,68,68,0.15);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .btn-danger:hover { background: rgba(239,68,68,0.15); }
-
-        /* Health bar */
-        .health-bar {
-            height: 6px;
-            border-radius: 100px;
-            background: #1e1e22;
-            overflow: hidden;
-        }
-        .health-bar-fill {
-            height: 100%;
-            border-radius: 100px;
-            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        /* Transaction row */
-        .tx-row {
-            display: grid;
-            grid-template-columns: 90px 1fr 120px 100px 50px;
-            align-items: center;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            font-size: 12px;
-            transition: background 0.15s;
-        }
+        input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.5; }
+        .btn-primary { width: 100%; padding: 12px; background: var(--text-primary); color: white; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+        .btn-primary:hover { opacity: 0.85; }
+        .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; }
+        .health-bar { height: 5px; border-radius: 100px; background: var(--bg-secondary); overflow: hidden; }
+        .health-bar-fill { height: 100%; border-radius: 100px; transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .tx-row { display: grid; grid-template-columns: 90px 1fr 120px 100px 50px; align-items: center; padding: 11px 16px; border-bottom: 1px solid var(--border); font-size: 12px; transition: background 0.15s; }
         .tx-row:hover { background: var(--bg-card-hover); }
         .tx-row:last-child { border-bottom: none; }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(41, 37, 36, 0.3); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-content {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 32px;
-            width: 90%;
-            max-width: 440px;
-            transform: translateY(20px);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+        .modal-content { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; width: 90%; max-width: 440px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .modal-overlay.active .modal-content { transform: translateY(0); }
-
-        /* Animate in */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-in { animation: fadeUp 0.4s ease forwards; }
-        .delay-1 { animation-delay: 0.05s; opacity: 0; }
-        .delay-2 { animation-delay: 0.1s; opacity: 0; }
-        .delay-3 { animation-delay: 0.15s; opacity: 0; }
-        .delay-4 { animation-delay: 0.2s; opacity: 0; }
+        .delay-1 { animation-delay: 0.05s; opacity: 0; } .delay-2 { animation-delay: 0.1s; opacity: 0; }
+        .delay-3 { animation-delay: 0.15s; opacity: 0; } .delay-4 { animation-delay: 0.2s; opacity: 0; }
         .delay-5 { animation-delay: 0.25s; opacity: 0; }
-
-        /* Pulse dot */
-        .pulse-dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            animation: pulse 2s ease infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* Grid layout for wider screens */
-        @media (min-width: 1024px) {
-            .dashboard-grid {
-                display: grid;
-                grid-template-columns: 300px 1fr;
-                gap: 24px;
-            }
-        }
-        @media (max-width: 1023px) {
-            .dashboard-grid { display: flex; flex-direction: column; gap: 16px; }
-            .tx-row { grid-template-columns: 70px 1fr 90px 80px 40px; font-size: 11px; }
-        }
-
-        /* Score ring */
-        .score-ring {
-            width: 120px; height: 120px;
-            position: relative;
-        }
+        .pulse-dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 2s ease infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @media (min-width: 1024px) { .dashboard-grid { display: grid; grid-template-columns: 300px 1fr; gap: 20px; } }
+        @media (max-width: 1023px) { .dashboard-grid { display: flex; flex-direction: column; gap: 16px; } .tx-row { grid-template-columns: 70px 1fr 90px 80px 40px; font-size: 11px; } }
+        .score-ring { width: 110px; height: 110px; position: relative; }
         .score-ring svg { transform: rotate(-90deg); }
-        .score-ring-value {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
+        .score-ring-value { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .warm-line { height: 2px; background: linear-gradient(90deg, var(--warm-accent), transparent); border: none; opacity: 0.25; }
+        .filter-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; background: var(--text-primary); color: white; cursor: pointer; transition: all 0.15s; }
+        .filter-chip:hover { opacity: 0.8; }
+        .filter-chip svg { opacity: 0.6; }
+        .filter-bar { display: none; align-items: center; gap: 8px; padding: 10px 16px; background: var(--bg-secondary); border-radius: 12px; margin-bottom: 16px; }
+        .filter-bar.active { display: flex; }
+        canvas { cursor: pointer; }
     </style>
 </head>
 <body>
-
 <div id="app" class="min-h-screen p-4 lg:p-6 max-w-[1600px] mx-auto">
 
-    <!-- HEADER -->
-    <header class="flex items-center justify-between mb-8 animate-in">
-        <div class="flex items-center gap-4">
-            <div>
-                <h1 class="font-serif text-2xl lg:text-3xl italic text-white" style="letter-spacing: -0.01em;">Personal CFO</h1>
-                <p class="label mt-1" id="header-period">Se încarcă...</p>
-            </div>
+    <header class="flex items-center justify-between mb-6 animate-in">
+        <div>
+            <h1 class="font-serif text-2xl lg:text-3xl italic" style="letter-spacing:-0.01em;">Personal CFO</h1>
+            <p class="label mt-1" id="header-period">Se încarcă...</p>
         </div>
         <div class="flex items-center gap-3">
-            <div class="flex items-center gap-2" id="sync-indicator">
-                <div class="pulse-dot" style="background: var(--green);"></div>
-                <span class="text-[10px] font-bold text-green-500 uppercase tracking-wider">Live</span>
-            </div>
-            <button onclick="openAddModal()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-white text-black hover:bg-gray-200 transition-all" style="letter-spacing: 0.04em;">
+            <div class="flex items-center gap-2" id="sync-indicator"><div class="pulse-dot" style="background:var(--green);"></div><span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--green);">Live</span></div>
+            <button onclick="openAddModal()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all" style="background:var(--text-primary);color:white;letter-spacing:0.04em;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Adaugă
             </button>
         </div>
     </header>
+    <hr class="warm-line mb-6 animate-in">
 
-    <!-- TIME TABS -->
-    <div class="flex gap-2 mb-6 animate-in delay-1">
+    <div class="flex gap-2 mb-4 animate-in delay-1">
         <button class="tab-btn active" data-view="month" onclick="switchView('month')">Luna</button>
         <button class="tab-btn" data-view="week" onclick="switchView('week')">Săptămâna</button>
         <button class="tab-btn" data-view="year" onclick="switchView('year')">Anual</button>
     </div>
 
-    <!-- MAIN GRID -->
+    <!-- ACTIVE FILTER BAR -->
+    <div class="filter-bar" id="filter-bar">
+        <span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--text-muted);">Filtru activ:</span>
+        <div id="filter-chips"></div>
+        <button onclick="clearAllFilters()" class="text-[10px] font-bold uppercase tracking-wider ml-auto" style="color:var(--red);cursor:pointer;">✕ Resetează</button>
+    </div>
+
     <div class="dashboard-grid">
-
-        <!-- LEFT SIDEBAR -->
         <div class="space-y-4">
-
-            <!-- FINANCIAL HEALTH SCORE -->
+            <!-- Health Score -->
             <div class="card p-6 animate-in delay-2">
                 <p class="label mb-4">Sănătate Financiară</p>
                 <div class="flex items-center gap-5">
                     <div class="score-ring">
-                        <svg width="120" height="120" viewBox="0 0 120 120">
-                            <circle cx="60" cy="60" r="52" fill="none" stroke="#1e1e22" stroke-width="8"/>
-                            <circle id="health-ring" cx="60" cy="60" r="52" fill="none" stroke="var(--green)" stroke-width="8"
-                                stroke-dasharray="326.7" stroke-dashoffset="326.7" stroke-linecap="round"
-                                style="transition: stroke-dashoffset 1s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.3s;"/>
+                        <svg width="110" height="110" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="52" fill="none" stroke="var(--bg-secondary)" stroke-width="7"/>
+                            <circle id="health-ring" cx="60" cy="60" r="52" fill="none" stroke="var(--green)" stroke-width="7" stroke-dasharray="326.7" stroke-dashoffset="326.7" stroke-linecap="round" style="transition: stroke-dashoffset 1s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.3s;"/>
                         </svg>
-                        <div class="score-ring-value">
-                            <span class="stat-value text-2xl" id="health-score">—</span>
-                            <p class="text-[9px] text-zinc-500 font-bold">/100</p>
-                        </div>
+                        <div class="score-ring-value"><span class="stat-value text-2xl" id="health-score">—</span><p class="text-[9px] font-bold" style="color:var(--text-muted);">/100</p></div>
                     </div>
                     <div class="space-y-2.5 flex-1">
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-[10px] text-zinc-500">Savings Rate</span>
-                                <span class="font-mono text-[11px] font-bold" id="savings-rate">0%</span>
-                            </div>
-                            <div class="health-bar"><div class="health-bar-fill" id="savings-bar" style="width:0; background: var(--green);"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-[10px] text-zinc-500">Needs ≤50%</span>
-                                <span class="font-mono text-[11px] font-bold" id="needs-rate">0%</span>
-                            </div>
-                            <div class="health-bar"><div class="health-bar-fill" id="needs-bar" style="width:0; background: var(--blue);"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-[10px] text-zinc-500">Waste</span>
-                                <span class="font-mono text-[11px] font-bold" id="waste-rate">0%</span>
-                            </div>
-                            <div class="health-bar"><div class="health-bar-fill" id="waste-bar" style="width:0; background: var(--red);"></div></div>
-                        </div>
+                        <div><div class="flex justify-between mb-1"><span class="text-[10px]" style="color:var(--text-secondary);">Savings Rate</span><span class="font-mono text-[11px] font-bold" id="savings-rate">0%</span></div><div class="health-bar"><div class="health-bar-fill" id="savings-bar" style="width:0;background:var(--green);"></div></div></div>
+                        <div><div class="flex justify-between mb-1"><span class="text-[10px]" style="color:var(--text-secondary);">Needs ≤50%</span><span class="font-mono text-[11px] font-bold" id="needs-rate">0%</span></div><div class="health-bar"><div class="health-bar-fill" id="needs-bar" style="width:0;background:var(--blue);"></div></div></div>
+                        <div><div class="flex justify-between mb-1"><span class="text-[10px]" style="color:var(--text-secondary);">Waste</span><span class="font-mono text-[11px] font-bold" id="waste-rate">0%</span></div><div class="health-bar"><div class="health-bar-fill" id="waste-bar" style="width:0;background:var(--red);"></div></div></div>
                     </div>
                 </div>
             </div>
-
-            <!-- EGLD PORTFOLIO -->
+            <!-- EGLD -->
             <div class="card p-6 animate-in delay-3">
-                <div class="flex items-center justify-between mb-4">
-                    <p class="label">EGLD Holdings</p>
-                    <span class="pill pill-purple" id="egld-change">—</span>
-                </div>
-                <div class="flex items-baseline gap-2 mb-1">
-                    <span class="stat-value text-3xl" id="egld-value">—</span>
-                    <span class="text-xs text-zinc-500">USD</span>
-                </div>
-                <p class="text-[11px] text-zinc-500 mb-4">450 EGLD · <span id="egld-price">—</span>/EGLD</p>
-                <div>
-                    <div class="flex justify-between mb-1.5">
-                        <span class="text-[10px] text-zinc-500">Break-even: $44.44</span>
-                        <span class="font-mono text-[11px] font-bold" id="egld-roi">0%</span>
-                    </div>
-                    <div class="health-bar">
-                        <div class="health-bar-fill" id="egld-bar" style="width: 50%; background: var(--purple);"></div>
-                    </div>
-                </div>
-                <div class="mt-4 pt-4 border-t border-zinc-800/50">
-                    <div class="flex justify-between text-[11px]">
-                        <span class="text-zinc-500">Investit</span>
-                        <span class="font-mono font-bold">$20,000</span>
-                    </div>
-                    <div class="flex justify-between text-[11px] mt-1">
-                        <span class="text-zinc-500">P/L</span>
-                        <span class="font-mono font-bold" id="egld-pl">—</span>
-                    </div>
+                <div class="flex items-center justify-between mb-4"><p class="label">EGLD Holdings</p><span class="pill pill-purple" id="egld-change">—</span></div>
+                <div class="flex items-baseline gap-2 mb-1"><span class="stat-value text-3xl" id="egld-value">—</span><span class="text-xs" style="color:var(--text-muted);">USD</span></div>
+                <p class="text-[11px] mb-4" style="color:var(--text-secondary);">450 EGLD · <span id="egld-price">—</span>/EGLD</p>
+                <div><div class="flex justify-between mb-1.5"><span class="text-[10px]" style="color:var(--text-secondary);">Break-even: $44.44</span><span class="font-mono text-[11px] font-bold" id="egld-roi">0%</span></div><div class="health-bar"><div class="health-bar-fill" id="egld-bar" style="width:50%;background:var(--purple);"></div></div></div>
+                <div class="mt-4 pt-4" style="border-top:1px solid var(--border);">
+                    <div class="flex justify-between text-[11px]"><span style="color:var(--text-secondary);">Investit</span><span class="font-mono font-bold">$20,000</span></div>
+                    <div class="flex justify-between text-[11px] mt-1"><span style="color:var(--text-secondary);">P/L</span><span class="font-mono font-bold" id="egld-pl">—</span></div>
                 </div>
             </div>
-
-            <!-- EMERGENCY FUND -->
+            <!-- Emergency Fund -->
             <div class="card p-6 animate-in delay-4">
                 <p class="label mb-3">Fond Urgență</p>
-                <div class="flex items-baseline gap-2 mb-2">
-                    <span class="stat-value text-xl" id="emergency-current">0</span>
-                    <span class="text-xs text-zinc-500">/ <span id="emergency-target">21,000</span> RON</span>
-                </div>
-                <p class="text-[10px] text-zinc-500 mb-2">3 luni cheltuieli fixe</p>
-                <div class="health-bar">
-                    <div class="health-bar-fill" id="emergency-bar" style="width: 0%; background: var(--amber);"></div>
-                </div>
-                <p class="text-[10px] text-zinc-500 mt-2" id="emergency-months">0 luni acoperite</p>
+                <div class="flex items-baseline gap-2 mb-2"><span class="stat-value text-xl" id="emergency-current">0</span><span class="text-xs" style="color:var(--text-secondary);">/ <span id="emergency-target">21,000</span> RON</span></div>
+                <p class="text-[10px] mb-2" style="color:var(--text-muted);">3 luni cheltuieli fixe</p>
+                <div class="health-bar"><div class="health-bar-fill" id="emergency-bar" style="width:0%;background:var(--amber);"></div></div>
+                <p class="text-[10px] mt-2" style="color:var(--text-muted);" id="emergency-months">0 luni acoperite</p>
             </div>
-
-            <!-- QUICK INSIGHTS -->
+            <!-- Insights -->
             <div class="card p-6 animate-in delay-5">
                 <p class="label mb-3">CFO Insights</p>
-                <div class="space-y-2" id="insights-list">
-                    <p class="text-[11px] text-zinc-500 italic">Se analizează...</p>
-                </div>
+                <div class="space-y-2" id="insights-list"><p class="text-[11px] italic" style="color:var(--text-muted);">Se analizează...</p></div>
             </div>
         </div>
 
-        <!-- MAIN CONTENT -->
         <div class="space-y-4">
-
-            <!-- TOP STATS ROW -->
+            <!-- Stats -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="card p-5 animate-in delay-1">
-                    <p class="label mb-2">Venituri</p>
-                    <p class="stat-value text-xl text-green-400" id="stat-income">0</p>
-                    <p class="text-[10px] text-zinc-500 mt-1" id="stat-income-sub"></p>
-                </div>
-                <div class="card p-5 animate-in delay-2">
-                    <p class="label mb-2">Cheltuieli</p>
-                    <p class="stat-value text-xl text-red-400" id="stat-expenses">0</p>
-                    <p class="text-[10px] text-zinc-500 mt-1" id="stat-expenses-sub"></p>
-                </div>
-                <div class="card p-5 animate-in delay-3" style="border-color: rgba(34,197,94,0.2); background: linear-gradient(135deg, var(--bg-card), rgba(34,197,94,0.03));">
-                    <p class="label mb-2" style="color: var(--green);">Aer Liber</p>
-                    <p class="stat-value text-xl text-green-400" id="stat-free">0</p>
-                    <p class="text-[10px] text-green-700 mt-1">Safe to spend</p>
-                </div>
-                <div class="card p-5 animate-in delay-4">
-                    <p class="label mb-2">Investit</p>
-                    <p class="stat-value text-xl text-blue-400" id="stat-invested">0</p>
-                    <p class="text-[10px] text-zinc-500 mt-1" id="stat-invested-sub"></p>
-                </div>
+                <div class="card p-5 animate-in delay-1"><p class="label mb-2">Venituri</p><p class="stat-value text-xl" style="color:var(--green);" id="stat-income">0</p><p class="text-[10px] mt-1" style="color:var(--text-muted);" id="stat-income-sub"></p></div>
+                <div class="card p-5 animate-in delay-2"><p class="label mb-2">Cheltuieli</p><p class="stat-value text-xl" style="color:var(--red);" id="stat-expenses">0</p><p class="text-[10px] mt-1" style="color:var(--text-muted);" id="stat-expenses-sub"></p></div>
+                <div class="card p-5 animate-in delay-3" style="border-color:rgba(21,128,61,0.2);background:linear-gradient(135deg,#fff,rgba(21,128,61,0.03));"><p class="label mb-2" style="color:var(--green);">Aer Liber</p><p class="stat-value text-xl" style="color:var(--green);" id="stat-free">0</p><p class="text-[10px] mt-1" style="color:var(--green);opacity:0.6;">Safe to spend</p></div>
+                <div class="card p-5 animate-in delay-4"><p class="label mb-2">Investit</p><p class="stat-value text-xl" style="color:var(--blue);" id="stat-invested">0</p><p class="text-[10px] mt-1" style="color:var(--text-muted);" id="stat-invested-sub"></p></div>
             </div>
-
-            <!-- CHARTS ROW -->
+            <!-- Charts -->
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
                 <div class="card p-6 lg:col-span-3 animate-in delay-3">
                     <div class="flex items-center justify-between mb-4">
-                        <p class="label">Cashflow</p>
-                        <div class="flex gap-3 text-[10px]">
-                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background: var(--green);"></span> Venituri</span>
-                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background: var(--red);"></span> Cheltuieli</span>
-                        </div>
+                        <p class="label" id="cf-chart-title">Cashflow</p>
+                        <div class="flex gap-3 text-[10px]" style="color:var(--text-secondary);"><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background:var(--green);"></span> Venituri</span><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background:var(--red);"></span> Cheltuieli</span></div>
                     </div>
-                    <div style="height: 240px;"><canvas id="cashflowChart"></canvas></div>
+                    <div style="height:240px;"><canvas id="cashflowChart"></canvas></div>
                 </div>
                 <div class="card p-6 lg:col-span-2 animate-in delay-4">
-                    <p class="label mb-4">Unde se duc banii</p>
-                    <div style="height: 240px;" class="flex items-center justify-center"><canvas id="categoryChart"></canvas></div>
+                    <p class="label mb-4">Unde se duc banii <span class="font-normal normal-case tracking-normal" style="color:var(--text-muted);font-size:9px;">(click = filtrează)</span></p>
+                    <div style="height:240px;" class="flex items-center justify-center"><canvas id="categoryChart"></canvas></div>
                 </div>
             </div>
-
-            <!-- SPENDING CATEGORIES BREAKDOWN -->
+            <!-- Category Bars -->
             <div class="card p-6 animate-in delay-5">
                 <div class="flex items-center justify-between mb-4">
                     <p class="label">Categorii Detaliate</p>
                     <div class="flex gap-2">
-                        <button onclick="filterTx('all')" class="tab-btn active text-[10px] px-3 py-1" data-filter="all">Toate</button>
-                        <button onclick="filterTx('bad')" class="tab-btn text-[10px] px-3 py-1" data-filter="bad">Risipă</button>
-                        <button onclick="filterTx('needs')" class="tab-btn text-[10px] px-3 py-1" data-filter="needs">Nevoi</button>
-                        <button onclick="filterTx('invest')" class="tab-btn text-[10px] px-3 py-1" data-filter="invest">Investiții</button>
+                        <button onclick="filterType('all')" class="tab-btn active text-[10px] px-3 py-1" data-filter="all">Toate</button>
+                        <button onclick="filterType('bad')" class="tab-btn text-[10px] px-3 py-1" data-filter="bad">Risipă</button>
+                        <button onclick="filterType('needs')" class="tab-btn text-[10px] px-3 py-1" data-filter="needs">Nevoi</button>
+                        <button onclick="filterType('invest')" class="tab-btn text-[10px] px-3 py-1" data-filter="invest">Investiții</button>
                     </div>
                 </div>
                 <div id="category-bars" class="space-y-3"></div>
             </div>
-
-            <!-- TRANSACTIONS -->
+            <!-- Transactions -->
             <div class="card-flush animate-in delay-5">
-                <div class="flex items-center justify-between p-5 pb-0">
-                    <p class="label">Tranzacții</p>
-                    <span class="text-[10px] text-zinc-500" id="tx-count">0 înregistrări</span>
-                </div>
-                <div class="mt-4" style="max-height: 400px; overflow-y: auto;">
-                    <div class="tx-row" style="border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg-card); z-index: 2;">
-                        <span class="label" style="font-size: 9px;">Data</span>
-                        <span class="label" style="font-size: 9px;">Detalii</span>
-                        <span class="label text-right" style="font-size: 9px;">Sumă</span>
-                        <span class="label text-center" style="font-size: 9px;">Clasă</span>
-                        <span></span>
+                <div class="flex items-center justify-between p-5 pb-0"><p class="label">Tranzacții</p><span class="text-[10px]" style="color:var(--text-muted);" id="tx-count">0 înregistrări</span></div>
+                <div class="mt-4" style="max-height:400px;overflow-y:auto;">
+                    <div class="tx-row" style="border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-card);z-index:2;">
+                        <span class="label" style="font-size:9px;">Data</span><span class="label" style="font-size:9px;">Detalii</span><span class="label text-right" style="font-size:9px;">Sumă</span><span class="label text-center" style="font-size:9px;">Clasă</span><span></span>
                     </div>
                     <div id="tx-list"></div>
                 </div>
@@ -503,711 +206,433 @@
     </div>
 </div>
 
-<!-- ADD/EDIT MODAL -->
+<!-- Modals -->
 <div class="modal-overlay" id="modal">
     <div class="modal-content">
         <div class="flex items-center justify-between mb-6">
             <h2 class="font-serif text-xl italic" id="modal-title">Adaugă Tranzacție</h2>
-            <button onclick="closeModal()" class="text-zinc-500 hover:text-white transition-colors">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
+            <button onclick="closeModal()" style="color:var(--text-muted);" class="hover:opacity-60 transition-opacity"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
         <form id="txForm" onsubmit="submitTransaction(event)" class="space-y-3">
             <input type="hidden" id="edit-index" value="">
-            <div class="grid grid-cols-2 gap-3">
-                <input type="date" id="f-date" class="input-field" required>
-                <input type="number" id="f-amount" step="0.01" placeholder="Sumă RON" class="input-field font-mono" required>
-            </div>
-            <select id="f-type" class="input-field" onchange="updateCategories()">
-                <option value="Venit Fix (Salariu)">💰 Salariu</option>
-                <option value="Freelance">💻 Freelance</option>
-                <option value="Cheltuială Fixă (Lunară)">📌 Fixe (Lunară)</option>
-                <option value="Cheltuială">🛒 Cheltuială</option>
-                <option value="Investiție">📈 Investiție</option>
-                <option value="Cheltuială Viitoare">📅 Planificată</option>
-            </select>
+            <div class="grid grid-cols-2 gap-3"><input type="date" id="f-date" class="input-field" required><input type="number" id="f-amount" step="0.01" placeholder="Sumă RON" class="input-field font-mono" required></div>
+            <select id="f-type" class="input-field" onchange="updateCategories()"><option value="Venit Fix (Salariu)">💰 Salariu</option><option value="Freelance">💻 Freelance</option><option value="Cheltuială Fixă (Lunară)">📌 Fixe (Lunară)</option><option value="Cheltuială">🛒 Cheltuială</option><option value="Investiție">📈 Investiție</option><option value="Cheltuială Viitoare">📅 Planificată</option></select>
             <select id="f-category" class="input-field"></select>
             <input type="text" id="f-description" placeholder="Descriere (opțional)" class="input-field">
-            <select id="f-class" class="input-field">
-                <option value="Nevoie">Nevoie</option>
-                <option value="Stil de viață">Stil de viață</option>
-                <option value="Creștere">Creștere</option>
-            </select>
-            <div class="grid grid-cols-2 gap-3">
-                <select id="f-importance" class="input-field">
-                    <option value="5">⭐ 5 — Esențial</option>
-                    <option value="4">4 — Important</option>
-                    <option value="3">3 — Util</option>
-                    <option value="2">2 — Discutabil</option>
-                    <option value="1">1 — Impuls</option>
-                </select>
-                <input type="text" id="f-reason" placeholder="Justificare" class="input-field">
-            </div>
+            <select id="f-class" class="input-field"><option value="Nevoie">Nevoie</option><option value="Stil de viață">Stil de viață</option><option value="Creștere">Creștere</option></select>
+            <div class="grid grid-cols-2 gap-3"><select id="f-importance" class="input-field"><option value="5">⭐ 5 — Esențial</option><option value="4">4 — Important</option><option value="3">3 — Util</option><option value="2">2 — Discutabil</option><option value="1">1 — Impuls</option></select><input type="text" id="f-reason" placeholder="Justificare" class="input-field"></div>
             <button type="submit" id="submit-btn" class="btn-primary mt-2">EXECUTĂ</button>
         </form>
     </div>
 </div>
-
-<!-- DELETE CONFIRM MODAL -->
 <div class="modal-overlay" id="delete-modal">
-    <div class="modal-content" style="max-width: 360px;">
+    <div class="modal-content" style="max-width:360px;">
         <h2 class="font-serif text-lg italic mb-2">Confirmare Ștergere</h2>
-        <p class="text-sm text-zinc-400 mb-6" id="delete-desc">Ești sigur?</p>
+        <p class="text-sm mb-6" style="color:var(--text-secondary);" id="delete-desc">Ești sigur?</p>
         <div class="flex gap-3">
-            <button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl text-xs font-bold border border-zinc-800 text-zinc-400 hover:text-white transition-all">Anulează</button>
-            <button onclick="confirmDelete()" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all">Șterge</button>
+            <button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl text-xs font-bold border transition-all" style="border-color:var(--border);color:var(--text-secondary);">Anulează</button>
+            <button onclick="confirmDelete()" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all" style="background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,0.15);">Șterge</button>
         </div>
     </div>
 </div>
 
 <script>
-    Chart.register(ChartDataLabels);
+Chart.register(ChartDataLabels);
+const API_URL = "https://script.google.com/macros/s/AKfycbxsPgZ1e0nGuU6YR0GJYm8fstYyo6OhxtjfXOmPyGrwFSTVDePFOMsFB4oGlacpMXNLnQ/exec";
+const EGLD_QTY = 450, EGLD_INVESTED = 20000;
+const CATEGORIES = {"Venit Fix (Salariu)":["Salariu Bază"],"Freelance":["Proiect X","Consultanță","Side Project"],"Cheltuială Fixă (Lunară)":["Chirie","Credit/Rată","Utilități","Abonamente"],"Cheltuială":["Mâncare","Transport","Ieșiri","Sănătate","Diverse","Haine"],"Investiție":["Bursă/ETF","Crypto","Fond Freelancing","Fond Urgență"],"Cheltuială Viitoare":["Mașină","Nunți","Vacanțe","Eveniment Familie"]};
+const WASTE=["Ieșiri","Diverse","Haine"],NEEDS=["Chirie","Credit/Rată","Utilități","Mâncare","Transport","Sănătate"],INV=["Bursă/ETF","Crypto","Fond Freelancing","Fond Urgență"];
+const MN=["Ian","Feb","Mar","Apr","Mai","Iun","Iul","Aug","Sep","Oct","Nov","Dec"];
+const DAYS=["Lun","Mar","Mie","Joi","Vin","Sâm","Dum"];
 
-    // ========================
-    // CONFIG
-    // ========================
-    const API_URL = "https://script.google.com/macros/s/AKfycbxsPgZ1e0nGuU6YR0GJYm8fstYyo6OhxtjfXOmPyGrwFSTVDePFOMsFB4oGlacpMXNLnQ/exec";
-    const EGLD_QTY = 450;
-    const EGLD_INVESTED = 20000;
-    const EGLD_BE = EGLD_INVESTED / EGLD_QTY; // $44.44
+let allTx=[], view='month', charts={}, delTarget=null, editOrig=null;
 
-    const CATEGORIES = {
-        "Venit Fix (Salariu)": ["Salariu Bază"],
-        "Freelance": ["Proiect X", "Consultanță", "Side Project"],
-        "Cheltuială Fixă (Lunară)": ["Chirie", "Credit/Rată", "Utilități", "Abonamente"],
-        "Cheltuială": ["Mâncare", "Transport", "Ieșiri", "Sănătate", "Diverse", "Haine"],
-        "Investiție": ["Bursă/ETF", "Crypto", "Fond Freelancing", "Fond Urgență"],
-        "Cheltuială Viitoare": ["Mașină", "Nunți", "Vacanțe", "Eveniment Familie"]
-    };
+// ========== FILTER STATE ==========
+let filters = { category: null, day: null, drillMonth: null };
 
-    const WASTE_CATEGORIES = ["Ieșiri", "Diverse", "Haine"];
-    const NEEDS_CATEGORIES = ["Chirie", "Credit/Rată", "Utilități", "Mâncare", "Transport", "Sănătate"];
-    const INVEST_CATEGORIES = ["Bursă/ETF", "Crypto", "Fond Freelancing", "Fond Urgență"];
+function setFilter(key, val, label) {
+    filters[key] = val;
+    updateFilterBar();
+    applyFilters();
+}
+function removeFilter(key) {
+    filters[key] = null;
+    if (key === 'drillMonth') { /* back to year view chart */ }
+    updateFilterBar();
+    applyFilters();
+}
+function clearAllFilters() {
+    filters = { category: null, day: null, drillMonth: null };
+    updateFilterBar();
+    applyFilters();
+}
+function updateFilterBar() {
+    const bar = document.getElementById('filter-bar');
+    const chips = document.getElementById('filter-chips');
+    const active = Object.entries(filters).filter(([k,v]) => v !== null);
+    if (active.length === 0) { bar.classList.remove('active'); return; }
+    bar.classList.add('active');
+    chips.innerHTML = active.map(([k,v]) => {
+        const labels = { category: '📂 ' + v, day: '📅 ' + v, drillMonth: '📆 ' + MN[v] };
+        return `<span class="filter-chip" onclick="removeFilter('${k}')">${labels[k] || v} <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>`;
+    }).join('');
+}
 
-    const MONTH_NAMES = ["Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function applyFilters() {
+    const base = getBaseFiltered();
+    let filtered = base;
 
-    // ========================
-    // STATE
-    // ========================
-    let allTransactions = [];
-    let currentView = 'month';
-    let charts = {};
-    let deleteTarget = null;
-
-    // ========================
-    // INIT
-    // ========================
-    document.getElementById('f-date').valueAsDate = new Date();
-    updateCategories();
-    loadData();
-    fetchEGLD();
-    setInterval(fetchEGLD, 120000);
-
-    // ========================
-    // DATA LOADING
-    // ========================
-    async function loadData() {
-        try {
-            setSyncState('loading');
-            const res = await fetch(API_URL);
-            const d = await res.json();
-            allTransactions = d.transactions || [];
-            render();
-            setSyncState('live');
-        } catch(e) {
-            console.error("Load error:", e);
-            setSyncState('error');
-        }
+    if (filters.drillMonth !== null && view === 'year') {
+        filtered = filtered.filter(t => new Date(t.date).getMonth() === filters.drillMonth);
     }
-
-    function setSyncState(state) {
-        const el = document.getElementById('sync-indicator');
-        if (state === 'loading') {
-            el.innerHTML = '<div class="pulse-dot" style="background: var(--amber);"></div><span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Sync...</span>';
-        } else if (state === 'live') {
-            el.innerHTML = '<div class="pulse-dot" style="background: var(--green);"></div><span class="text-[10px] font-bold text-green-500 uppercase tracking-wider">Live</span>';
-        } else {
-            el.innerHTML = '<div class="pulse-dot" style="background: var(--red);"></div><span class="text-[10px] font-bold text-red-500 uppercase tracking-wider">Eroare</span>';
-        }
-    }
-
-    // ========================
-    // EGLD
-    // ========================
-    async function fetchEGLD() {
-        try {
-            const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=elrond-erd-2&vs_currencies=usd&include_24hr_change=true');
-            const d = await r.json();
-            const data = d['elrond-erd-2'];
-            const price = data.usd;
-            const change24 = data.usd_24h_change || 0;
-            const value = price * EGLD_QTY;
-            const pl = value - EGLD_INVESTED;
-            const roi = (pl / EGLD_INVESTED) * 100;
-
-            document.getElementById('egld-price').textContent = '$' + price.toFixed(2);
-            document.getElementById('egld-value').textContent = '$' + Math.round(value).toLocaleString();
-            document.getElementById('egld-roi').textContent = (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%';
-            document.getElementById('egld-pl').textContent = (pl >= 0 ? '+$' : '-$') + Math.abs(Math.round(pl)).toLocaleString();
-            document.getElementById('egld-pl').style.color = pl >= 0 ? 'var(--green)' : 'var(--red)';
-
-            const changeEl = document.getElementById('egld-change');
-            changeEl.textContent = (change24 >= 0 ? '↑' : '↓') + ' ' + Math.abs(change24).toFixed(1) + '% 24h';
-            changeEl.className = 'pill ' + (change24 >= 0 ? 'pill-green' : 'pill-red');
-
-            const bar = document.getElementById('egld-bar');
-            bar.style.width = Math.min(Math.max(50 + roi / 2, 5), 100) + '%';
-            bar.style.background = roi >= 0 ? 'var(--green)' : 'var(--red)';
-        } catch(e) {
-            console.error("EGLD fetch error:", e);
-        }
-    }
-
-    // ========================
-    // VIEW SWITCHING
-    // ========================
-    function switchView(view) {
-        currentView = view;
-        document.querySelectorAll('[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === view));
-        render();
-    }
-
-    // ========================
-    // MAIN RENDER
-    // ========================
-    function render() {
-        const now = new Date();
-        const curYear = now.getFullYear();
-        const curMonth = now.getMonth();
-
-        // Filter transactions based on view
-        let filtered = [];
-        let periodLabel = '';
-
-        if (currentView === 'week') {
-            const startOfWeek = new Date(now);
-            startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Monday
-            startOfWeek.setHours(0,0,0,0);
-            const endOfWeek = new Date(startOfWeek);
-            endOfWeek.setDate(startOfWeek.getDate() + 6);
-            endOfWeek.setHours(23,59,59);
-
-            filtered = allTransactions.filter(t => {
-                const d = new Date(t.date);
-                return d >= startOfWeek && d <= endOfWeek;
-            });
-            periodLabel = `Săptămâna ${startOfWeek.getDate()} - ${endOfWeek.getDate()} ${MONTH_NAMES[curMonth]} ${curYear}`;
-
-        } else if (currentView === 'month') {
-            filtered = allTransactions.filter(t => {
-                const d = new Date(t.date);
-                return d.getFullYear() === curYear && d.getMonth() === curMonth;
-            });
-            periodLabel = `${MONTH_NAMES[curMonth]} ${curYear}`;
-
-        } else { // year
-            filtered = allTransactions.filter(t => {
-                const d = new Date(t.date);
-                return d.getFullYear() === curYear;
-            });
-            periodLabel = `Anul ${curYear}`;
-        }
-
-        document.getElementById('header-period').textContent = periodLabel;
-
-        // Calculate stats
-        let totalIncome = 0, totalExpenses = 0, totalInvested = 0, totalFixed = 0;
-        let categoryTotals = {};
-        let wasteTotal = 0, needsTotal = 0;
-
-        filtered.forEach(t => {
-            const isIncome = t.type.includes('Venit') || t.type.includes('Freelance');
-            const isInvest = t.type.includes('Investiție');
-            const isExpense = !isIncome;
-
-            if (isIncome) {
-                totalIncome += t.amount;
-            } else if (isInvest) {
-                totalInvested += t.amount;
-                totalExpenses += t.amount;
-            } else {
-                totalExpenses += t.amount;
-            }
-
-            if (t.type.includes('Fixă')) totalFixed += t.amount;
-
-            if (isExpense) {
-                categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
-            }
-
-            if (WASTE_CATEGORIES.includes(t.category)) wasteTotal += t.amount;
-            if (NEEDS_CATEGORIES.includes(t.category)) needsTotal += t.amount;
-        });
-
-        const freeToSpend = totalIncome - totalExpenses;
-        const savingsRate = totalIncome > 0 ? ((totalIncome - totalExpenses) / totalIncome * 100) : 0;
-        const needsRate = totalIncome > 0 ? (needsTotal / totalIncome * 100) : 0;
-        const wasteRate = totalIncome > 0 ? (wasteTotal / totalIncome * 100) : 0;
-
-        // Health score (0-100)
-        let healthScore = 50;
-        if (savingsRate > 20) healthScore += 20; else if (savingsRate > 10) healthScore += 10; else if (savingsRate < 0) healthScore -= 20;
-        if (needsRate <= 50) healthScore += 15; else if (needsRate > 70) healthScore -= 15;
-        if (wasteRate < 10) healthScore += 10; else if (wasteRate > 25) healthScore -= 10;
-        if (totalInvested > 0) healthScore += 5;
-        healthScore = Math.max(0, Math.min(100, healthScore));
-
-        // Update stats
-        document.getElementById('stat-income').textContent = fmt(totalIncome);
-        document.getElementById('stat-expenses').textContent = fmt(totalExpenses);
-        document.getElementById('stat-free').textContent = fmt(freeToSpend);
-        document.getElementById('stat-invested').textContent = fmt(totalInvested);
-
-        const expVsInc = totalIncome > 0 ? (totalExpenses / totalIncome * 100).toFixed(0) : 0;
-        document.getElementById('stat-expenses-sub').textContent = expVsInc + '% din venituri';
-        document.getElementById('stat-invested-sub').textContent = totalIncome > 0 ? (totalInvested / totalIncome * 100).toFixed(0) + '% din venituri' : '';
-
-        // Health indicators
-        document.getElementById('health-score').textContent = healthScore;
-        const ring = document.getElementById('health-ring');
-        ring.style.strokeDashoffset = 326.7 - (326.7 * healthScore / 100);
-        ring.style.stroke = healthScore >= 70 ? 'var(--green)' : healthScore >= 40 ? 'var(--amber)' : 'var(--red)';
-
-        document.getElementById('savings-rate').textContent = savingsRate.toFixed(0) + '%';
-        document.getElementById('savings-bar').style.width = Math.max(0, Math.min(savingsRate, 100)) + '%';
-        document.getElementById('savings-bar').style.background = savingsRate >= 20 ? 'var(--green)' : savingsRate >= 0 ? 'var(--amber)' : 'var(--red)';
-
-        document.getElementById('needs-rate').textContent = needsRate.toFixed(0) + '%';
-        document.getElementById('needs-bar').style.width = Math.min(needsRate, 100) + '%';
-        document.getElementById('needs-bar').style.background = needsRate <= 50 ? 'var(--blue)' : 'var(--red)';
-
-        document.getElementById('waste-rate').textContent = wasteRate.toFixed(0) + '%';
-        document.getElementById('waste-bar').style.width = Math.min(wasteRate * 2, 100) + '%';
-        document.getElementById('waste-bar').style.background = wasteRate <= 10 ? 'var(--green)' : wasteRate <= 20 ? 'var(--amber)' : 'var(--red)';
-
-        // Emergency fund (assume Fond Urgență category tracks this)
-        const monthlyFixed = totalFixed > 0 ? totalFixed : 7000;
-        const emergencyTarget = monthlyFixed * 3;
-        const emergencyFund = allTransactions.filter(t => t.category === 'Fond Urgență').reduce((s, t) => s + t.amount, 0);
-        document.getElementById('emergency-current').textContent = fmt(emergencyFund);
-        document.getElementById('emergency-target').textContent = fmt(emergencyTarget);
-        document.getElementById('emergency-bar').style.width = Math.min(emergencyFund / emergencyTarget * 100, 100) + '%';
-        document.getElementById('emergency-months').textContent = (emergencyFund / (monthlyFixed || 1)).toFixed(1) + ' luni acoperite';
-
-        // Insights
-        generateInsights(savingsRate, needsRate, wasteRate, wasteTotal, totalIncome, totalExpenses, categoryTotals);
-
-        // Charts
-        renderCashflowChart(curYear);
-        renderCategoryChart(categoryTotals, totalExpenses);
-
-        // Category bars
-        renderCategoryBars(categoryTotals, totalExpenses, 'all');
-
-        // Transactions
-        renderTransactions(filtered);
-    }
-
-    // ========================
-    // FORMATTING
-    // ========================
-    function fmt(n) {
-        return Math.round(n).toLocaleString('ro-RO') + ' RON';
-    }
-
-    // ========================
-    // INSIGHTS ENGINE
-    // ========================
-    function generateInsights(savings, needs, waste, wasteTotal, income, expenses, cats) {
-        const insights = [];
-
-        if (savings < 0) {
-            insights.push({ type: 'red', text: `⚠️ Cheltuiești mai mult decât câștigi. Deficit: ${fmt(expenses - income)}` });
-        } else if (savings < 10) {
-            insights.push({ type: 'amber', text: `Savings rate sub 10%. Țintește min 20%.` });
-        } else if (savings >= 20) {
-            insights.push({ type: 'green', text: `✓ Savings rate solid: ${savings.toFixed(0)}%` });
-        }
-
-        if (waste > 15 && wasteTotal > 0) {
-            insights.push({ type: 'red', text: `Risipă la ${waste.toFixed(0)}% din venituri. Taie Ieșiri/Diverse.` });
-        }
-
-        if (needs > 60) {
-            insights.push({ type: 'amber', text: `Nevoile consumă ${needs.toFixed(0)}% — caută optimizări la fixe.` });
-        }
-
-        // Top spending category
-        const topCat = Object.entries(cats).sort((a,b) => b[1] - a[1])[0];
-        if (topCat) {
-            insights.push({ type: 'blue', text: `Top cheltuială: ${topCat[0]} (${fmt(topCat[1])})` });
-        }
-
-        if (insights.length === 0) {
-            insights.push({ type: 'green', text: `Fără probleme detectate. Keep it boring. ✓` });
-        }
-
-        const container = document.getElementById('insights-list');
-        container.innerHTML = insights.map(i => `
-            <div class="flex items-start gap-2 p-2.5 rounded-lg" style="background: ${i.type === 'red' ? 'var(--red-bg)' : i.type === 'amber' ? 'var(--amber-bg)' : i.type === 'green' ? 'var(--green-bg)' : 'var(--blue-bg)'};">
-                <span class="text-[11px] leading-relaxed" style="color: ${i.type === 'red' ? 'var(--red)' : i.type === 'amber' ? 'var(--amber)' : i.type === 'green' ? 'var(--green)' : 'var(--blue)'};">${i.text}</span>
-            </div>
-        `).join('');
-    }
-
-    // ========================
-    // CHARTS
-    // ========================
-    function renderCashflowChart(year) {
-        let incByMonth = new Array(12).fill(0);
-        let expByMonth = new Array(12).fill(0);
-
-        allTransactions.forEach(t => {
+    if (filters.day !== null) {
+        filtered = filtered.filter(t => {
             const d = new Date(t.date);
-            if (d.getFullYear() !== year) return;
-            const m = d.getMonth();
-            if (t.type.includes('Venit') || t.type.includes('Freelance')) {
-                incByMonth[m] += t.amount;
-            } else {
-                expByMonth[m] += t.amount;
-            }
+            if (view === 'year' && filters.drillMonth !== null) return d.getDate() === filters.day;
+            if (view === 'month') return d.getDate() === filters.day;
+            if (view === 'week') return d.getDay() === filters.day; // 0=Sun
+            return true;
         });
+    }
+    if (filters.category) {
+        filtered = filtered.filter(t => t.category === filters.category);
+    }
 
-        const ctx = document.getElementById('cashflowChart').getContext('2d');
-        if (charts.cashflow) charts.cashflow.destroy();
+    renderStats(filtered, base);
+    renderTx(filtered);
+    renderBarsFromTx(filtered);
+}
 
-        charts.cashflow = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: MONTH_NAMES,
-                datasets: [
-                    {
-                        label: 'Venituri',
-                        data: incByMonth,
-                        backgroundColor: 'rgba(34,197,94,0.25)',
-                        borderColor: 'rgba(34,197,94,0.6)',
-                        borderWidth: 1,
-                        borderRadius: 6,
-                        barPercentage: 0.6,
-                    },
-                    {
-                        label: 'Cheltuieli',
-                        data: expByMonth,
-                        backgroundColor: 'rgba(239,68,68,0.2)',
-                        borderColor: 'rgba(239,68,68,0.5)',
-                        borderWidth: 1,
-                        borderRadius: 6,
-                        barPercentage: 0.6,
-                    }
-                ]
+// ========== INIT ==========
+document.getElementById('f-date').valueAsDate = new Date();
+updateCategories(); loadData(); fetchEGLD(); setInterval(fetchEGLD, 120000);
+
+async function loadData() {
+    try { syncUI('loading'); const r = await fetch(API_URL); const d = await r.json(); allTx = d.transactions || []; render(); syncUI('live'); }
+    catch(e) { console.error(e); syncUI('error'); }
+}
+function syncUI(s) {
+    const c={loading:['var(--amber)','Sync...'],live:['var(--green)','Live'],error:['var(--red)','Eroare']}[s];
+    document.getElementById('sync-indicator').innerHTML=`<div class="pulse-dot" style="background:${c[0]};"></div><span class="text-[10px] font-bold uppercase tracking-wider" style="color:${c[0]};">${c[1]}</span>`;
+}
+
+async function fetchEGLD() {
+    try {
+        const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=elrond-erd-2&vs_currencies=usd&include_24hr_change=true');
+        const d=(await r.json())['elrond-erd-2'],price=d.usd,ch=d.usd_24h_change||0,val=price*EGLD_QTY,pl=val-EGLD_INVESTED,roi=(pl/EGLD_INVESTED)*100;
+        document.getElementById('egld-price').textContent='$'+price.toFixed(2);
+        document.getElementById('egld-value').textContent='$'+Math.round(val).toLocaleString();
+        document.getElementById('egld-roi').textContent=(roi>=0?'+':'')+roi.toFixed(1)+'%';
+        document.getElementById('egld-pl').textContent=(pl>=0?'+$':'-$')+Math.abs(Math.round(pl)).toLocaleString();
+        document.getElementById('egld-pl').style.color=pl>=0?'var(--green)':'var(--red)';
+        const ce=document.getElementById('egld-change');ce.textContent=(ch>=0?'↑':'↓')+' '+Math.abs(ch).toFixed(1)+'% 24h';ce.className='pill '+(ch>=0?'pill-green':'pill-red');
+        const b=document.getElementById('egld-bar');b.style.width=Math.min(Math.max(50+roi/2,5),100)+'%';b.style.background=roi>=0?'var(--green)':'var(--red)';
+    } catch(e){console.error(e);}
+}
+
+function switchView(v) {
+    view=v;
+    filters = { category: null, day: null, drillMonth: null };
+    updateFilterBar();
+    document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
+    render();
+}
+
+// ========== BASE FILTER (time view) ==========
+function getBaseFiltered() {
+    const now=new Date(),Y=now.getFullYear(),M=now.getMonth();
+    if(view==='week'){
+        const s=new Date(now);s.setDate(now.getDate()-now.getDay()+1);s.setHours(0,0,0,0);
+        const e=new Date(s);e.setDate(s.getDate()+6);e.setHours(23,59,59);
+        return allTx.filter(t=>{const d=new Date(t.date);return d>=s&&d<=e;});
+    }
+    if(view==='month') return allTx.filter(t=>{const d=new Date(t.date);return d.getFullYear()===Y&&d.getMonth()===M;});
+    return allTx.filter(t=>new Date(t.date).getFullYear()===Y);
+}
+
+// ========== MAIN RENDER ==========
+function render() {
+    const now=new Date(),Y=now.getFullYear(),M=now.getMonth();
+    let label='';
+    if(view==='week'){
+        const s=new Date(now);s.setDate(now.getDate()-now.getDay()+1);
+        const e=new Date(s);e.setDate(s.getDate()+6);
+        label=`Săptămâna ${s.getDate()} – ${e.getDate()} ${MN[M]} ${Y}`;
+    } else if(view==='month') label=`${MN[M]} ${Y}`;
+    else label=`Anul ${Y}`;
+    document.getElementById('header-period').textContent=label;
+
+    const base = getBaseFiltered();
+    renderStats(base, base);
+    renderCashflowChart();
+    renderCatChart(base);
+    renderBarsFromTx(base);
+    renderTx(base);
+}
+
+// ========== STATS ==========
+function renderStats(filtered, base) {
+    let inc=0,exp=0,inv=0,fix=0,cats={},waste=0,needs=0;
+    filtered.forEach(t=>{
+        const isI=t.type.includes('Venit')||t.type.includes('Freelance'),isV=t.type.includes('Investiție');
+        if(isI)inc+=t.amount;else if(isV){inv+=t.amount;exp+=t.amount;}else exp+=t.amount;
+        if(t.type.includes('Fixă'))fix+=t.amount;
+        if(!isI)cats[t.category]=(cats[t.category]||0)+t.amount;
+        if(WASTE.includes(t.category))waste+=t.amount;
+        if(NEEDS.includes(t.category))needs+=t.amount;
+    });
+    const free=inc-exp,sr=inc>0?((inc-exp)/inc*100):0,nr=inc>0?(needs/inc*100):0,wr=inc>0?(waste/inc*100):0;
+    let hs=50;
+    if(sr>20)hs+=20;else if(sr>10)hs+=10;else if(sr<0)hs-=20;
+    if(nr<=50)hs+=15;else if(nr>70)hs-=15;
+    if(wr<10)hs+=10;else if(wr>25)hs-=10;
+    if(inv>0)hs+=5;hs=Math.max(0,Math.min(100,hs));
+
+    document.getElementById('stat-income').textContent=fmt(inc);
+    document.getElementById('stat-expenses').textContent=fmt(exp);
+    document.getElementById('stat-free').textContent=fmt(free);
+    document.getElementById('stat-invested').textContent=fmt(inv);
+    document.getElementById('stat-expenses-sub').textContent=inc>0?(exp/inc*100).toFixed(0)+'% din venituri':'';
+    document.getElementById('stat-invested-sub').textContent=inc>0?(inv/inc*100).toFixed(0)+'% din venituri':'';
+    document.getElementById('health-score').textContent=hs;
+    const ring=document.getElementById('health-ring');
+    ring.style.strokeDashoffset=326.7-(326.7*hs/100);
+    ring.style.stroke=hs>=70?'var(--green)':hs>=40?'var(--amber)':'var(--red)';
+    document.getElementById('savings-rate').textContent=sr.toFixed(0)+'%';
+    document.getElementById('savings-bar').style.width=Math.max(0,Math.min(sr,100))+'%';
+    document.getElementById('savings-bar').style.background=sr>=20?'var(--green)':sr>=0?'var(--amber)':'var(--red)';
+    document.getElementById('needs-rate').textContent=nr.toFixed(0)+'%';
+    document.getElementById('needs-bar').style.width=Math.min(nr,100)+'%';
+    document.getElementById('needs-bar').style.background=nr<=50?'var(--blue)':'var(--red)';
+    document.getElementById('waste-rate').textContent=wr.toFixed(0)+'%';
+    document.getElementById('waste-bar').style.width=Math.min(wr*2,100)+'%';
+    document.getElementById('waste-bar').style.background=wr<=10?'var(--green)':wr<=20?'var(--amber)':'var(--red)';
+
+    const mf=fix>0?fix:7000,et=mf*3,ef=allTx.filter(t=>t.category==='Fond Urgență').reduce((s,t)=>s+t.amount,0);
+    document.getElementById('emergency-current').textContent=fmt(ef);
+    document.getElementById('emergency-target').textContent=fmt(et);
+    document.getElementById('emergency-bar').style.width=Math.min(ef/et*100,100)+'%';
+    document.getElementById('emergency-months').textContent=(ef/(mf||1)).toFixed(1)+' luni acoperite';
+
+    // Insights
+    const insights=[];
+    if(sr<0)insights.push({t:'red',x:`⚠️ Deficit: ${fmt(exp-inc)}`});
+    else if(sr<10)insights.push({t:'amber',x:`Savings rate sub 10%. Țintește min 20%.`});
+    else if(sr>=20)insights.push({t:'green',x:`✓ Savings rate solid: ${sr.toFixed(0)}%`});
+    if(wr>15&&waste>0)insights.push({t:'red',x:`Risipă la ${wr.toFixed(0)}% — taie Ieșiri/Diverse.`});
+    if(nr>60)insights.push({t:'amber',x:`Nevoile = ${nr.toFixed(0)}% — optimizează fixele.`});
+    const tc=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];
+    if(tc)insights.push({t:'blue',x:`Top cheltuială: ${tc[0]} (${fmt(tc[1])})`});
+    if(!insights.length)insights.push({t:'green',x:`Totul e OK. Keep it boring. ✓`});
+    const bg={red:'var(--red-bg)',amber:'var(--amber-bg)',green:'var(--green-bg)',blue:'var(--blue-bg)'};
+    const fg={red:'var(--red)',amber:'var(--amber)',green:'var(--green)',blue:'var(--blue)'};
+    document.getElementById('insights-list').innerHTML=insights.map(i=>`<div class="flex items-start gap-2 p-2.5 rounded-lg" style="background:${bg[i.t]};"><span class="text-[11px] leading-relaxed" style="color:${fg[i.t]};">${i.x}</span></div>`).join('');
+}
+
+function fmt(n){return Math.round(n).toLocaleString('ro-RO')+' RON';}
+
+// ========== CASHFLOW CHART (ADAPTIVE) ==========
+function renderCashflowChart() {
+    const now=new Date(),Y=now.getFullYear(),M=now.getMonth();
+    let labels=[],incData=[],expData=[],chartTitle='Cashflow';
+
+    if (view === 'year' && filters.drillMonth === null) {
+        // Year view: months
+        labels = MN;
+        incData = new Array(12).fill(0); expData = new Array(12).fill(0);
+        allTx.forEach(t=>{const d=new Date(t.date);if(d.getFullYear()!==Y)return;const m=d.getMonth();
+            if(t.type.includes('Venit')||t.type.includes('Freelance'))incData[m]+=t.amount;else expData[m]+=t.amount;});
+        chartTitle = 'Cashflow Anual (click pe lună → drill-down)';
+    } else if (view === 'year' && filters.drillMonth !== null) {
+        // Drilled into a month from year view: days
+        const dm = filters.drillMonth;
+        const daysInMonth = new Date(Y, dm+1, 0).getDate();
+        labels = Array.from({length:daysInMonth},(_,i)=>(i+1).toString());
+        incData = new Array(daysInMonth).fill(0); expData = new Array(daysInMonth).fill(0);
+        allTx.forEach(t=>{const d=new Date(t.date);if(d.getFullYear()!==Y||d.getMonth()!==dm)return;
+            const day=d.getDate()-1;
+            if(t.type.includes('Venit')||t.type.includes('Freelance'))incData[day]+=t.amount;else expData[day]+=t.amount;});
+        chartTitle = `${MN[dm]} ${Y} — pe zile (click pe zi → filtrează)`;
+    } else if (view === 'month') {
+        // Month view: days of current month
+        const daysInMonth = new Date(Y, M+1, 0).getDate();
+        labels = Array.from({length:daysInMonth},(_,i)=>(i+1).toString());
+        incData = new Array(daysInMonth).fill(0); expData = new Array(daysInMonth).fill(0);
+        allTx.forEach(t=>{const d=new Date(t.date);if(d.getFullYear()!==Y||d.getMonth()!==M)return;
+            const day=d.getDate()-1;
+            if(t.type.includes('Venit')||t.type.includes('Freelance'))incData[day]+=t.amount;else expData[day]+=t.amount;});
+        chartTitle = `${MN[M]} — pe zile (click pe zi → filtrează)`;
+    } else if (view === 'week') {
+        // Week view: days Mon-Sun
+        labels = DAYS;
+        incData = new Array(7).fill(0); expData = new Array(7).fill(0);
+        const sow=new Date(now);sow.setDate(now.getDate()-now.getDay()+1);sow.setHours(0,0,0,0);
+        allTx.forEach(t=>{const d=new Date(t.date);
+            const diff=Math.floor((d-sow)/(1000*60*60*24));
+            if(diff<0||diff>6)return;
+            if(t.type.includes('Venit')||t.type.includes('Freelance'))incData[diff]+=t.amount;else expData[diff]+=t.amount;});
+        chartTitle = 'Săptămâna curentă (click pe zi → filtrează)';
+    }
+
+    document.getElementById('cf-chart-title').textContent = chartTitle;
+
+    const ctx=document.getElementById('cashflowChart').getContext('2d');
+    if(charts.cf)charts.cf.destroy();
+    charts.cf=new Chart(ctx,{
+        type:'bar',
+        data:{labels,datasets:[
+            {label:'Venituri',data:incData,backgroundColor:'rgba(21,128,61,0.15)',borderColor:'rgba(21,128,61,0.45)',borderWidth:1,borderRadius:4,barPercentage:0.7},
+            {label:'Cheltuieli',data:expData,backgroundColor:'rgba(220,38,38,0.12)',borderColor:'rgba(220,38,38,0.4)',borderWidth:1,borderRadius:4,barPercentage:0.7}
+        ]},
+        options:{
+            responsive:true,maintainAspectRatio:false,
+            onClick:(evt,elements)=>{
+                if(!elements.length)return;
+                const idx=elements[0].index;
+                handleChartClick(idx);
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    datalabels: {
-                        display: (ctx) => ctx.dataset.data[ctx.dataIndex] > 0,
-                        color: '#a1a1aa',
-                        anchor: 'end',
-                        align: 'top',
-                        font: { size: 9, family: 'JetBrains Mono', weight: '700' },
-                        formatter: v => v > 0 ? (v/1000).toFixed(1) + 'k' : ''
-                    }
-                },
-                scales: {
-                    y: { display: false },
-                    x: { grid: { display: false }, ticks: { color: '#52525b', font: { size: 10, family: 'DM Sans' } } }
-                }
-            }
-        });
+            plugins:{legend:{display:false},datalabels:{
+                display:c=>{const v=c.dataset.data[c.dataIndex];return v>0&&labels.length<=12;},
+                color:'#78716C',anchor:'end',align:'top',
+                font:{size:9,family:'JetBrains Mono',weight:'600'},
+                formatter:v=>v>0?(v>=1000?(v/1000).toFixed(1)+'k':Math.round(v)):''
+            }},
+            scales:{y:{display:false},x:{grid:{display:false},ticks:{color:'#A8A29E',font:{size:labels.length>15?8:10,family:'DM Sans'},maxRotation:0}}}
+        }
+    });
+}
+
+function handleChartClick(idx) {
+    const now = new Date(), Y = now.getFullYear(), M = now.getMonth();
+
+    if (view === 'year' && filters.drillMonth === null) {
+        // Click on month in year → drill down into that month
+        filters.drillMonth = idx;
+        filters.day = null;
+        updateFilterBar();
+        renderCashflowChart();
+        // Also filter everything to that month
+        applyFilters();
+    } else if (view === 'year' && filters.drillMonth !== null) {
+        // Click on day within drilled month
+        const dayNum = idx + 1;
+        setFilter('day', dayNum, dayNum.toString());
+    } else if (view === 'month') {
+        // Click on day in month
+        const dayNum = idx + 1;
+        setFilter('day', dayNum, dayNum.toString());
+    } else if (view === 'week') {
+        // Click on weekday → filter by that day of week
+        const sow = new Date(now); sow.setDate(now.getDate()-now.getDay()+1);
+        const clickedDate = new Date(sow); clickedDate.setDate(sow.getDate() + idx);
+        // Store as day-of-month for filtering
+        setFilter('day', clickedDate.getDate(), DAYS[idx] + ' ' + clickedDate.getDate());
     }
+}
 
-    function renderCategoryChart(cats, total) {
-        const sorted = Object.entries(cats).sort((a,b) => b[1] - a[1]).slice(0, 7);
-        const labels = sorted.map(s => s[0]);
-        const data = sorted.map(s => s[1]);
-        const colors = ['#3b82f6', '#ef4444', '#f59e0b', '#22c55e', '#a855f7', '#ec4899', '#06b6d4'];
-
-        const ctx = document.getElementById('categoryChart').getContext('2d');
-        if (charts.category) charts.category.destroy();
-
-        charts.category = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{ data: data, backgroundColor: colors.slice(0, data.length), borderWidth: 0 }]
+// ========== CATEGORY CHART (CLICKABLE) ==========
+function renderCatChart(txs) {
+    let cats = {};
+    txs.forEach(t=>{const isI=t.type.includes('Venit')||t.type.includes('Freelance');if(!isI)cats[t.category]=(cats[t.category]||0)+t.amount;});
+    const s=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,7);
+    const cols=['#2563EB','#DC2626','#B45309','#15803D','#7C3AED','#DB2777','#0891B2'];
+    const ctx=document.getElementById('categoryChart').getContext('2d');
+    if(charts.cat)charts.cat.destroy();
+    charts.cat=new Chart(ctx,{
+        type:'doughnut',
+        data:{labels:s.map(x=>x[0]),datasets:[{data:s.map(x=>x[1]),backgroundColor:cols.slice(0,s.length),borderWidth:2,borderColor:'#FFFFFF'}]},
+        options:{
+            responsive:true,maintainAspectRatio:false,cutout:'72%',
+            onClick:(evt,elements)=>{
+                if(!elements.length)return;
+                const idx=elements[0].index;
+                const catName=s[idx][0];
+                if(filters.category===catName){removeFilter('category');}
+                else{setFilter('category',catName,catName);}
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    legend: { display: false },
-                    datalabels: {
-                        display: (ctx) => {
-                            const val = ctx.dataset.data[ctx.dataIndex];
-                            const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
-                            return (val / total) > 0.08;
-                        },
-                        color: '#fafafa',
-                        font: { size: 9, family: 'DM Sans', weight: '700' },
-                        formatter: (v, ctx) => {
-                            const label = ctx.chart.data.labels[ctx.dataIndex];
-                            return label.length > 10 ? label.substring(0, 9) + '…' : label;
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // ========================
-    // CATEGORY BARS
-    // ========================
-    function renderCategoryBars(cats, total, filter) {
-        const sorted = Object.entries(cats).sort((a,b) => b[1] - a[1]);
-        const container = document.getElementById('category-bars');
-
-        let filteredCats = sorted;
-        if (filter === 'bad') filteredCats = sorted.filter(([cat]) => WASTE_CATEGORIES.includes(cat));
-        if (filter === 'needs') filteredCats = sorted.filter(([cat]) => NEEDS_CATEGORIES.includes(cat));
-        if (filter === 'invest') filteredCats = sorted.filter(([cat]) => INVEST_CATEGORIES.includes(cat));
-
-        if (filteredCats.length === 0) {
-            container.innerHTML = '<p class="text-[11px] text-zinc-500 italic py-4">Nicio tranzacție în această categorie.</p>';
-            return;
+            plugins:{legend:{display:false},datalabels:{
+                display:c=>{const v=c.dataset.data[c.dataIndex],t=c.dataset.data.reduce((a,b)=>a+b,0);return(v/t)>0.08;},
+                color:'#292524',font:{size:9,family:'DM Sans',weight:'700'},
+                formatter:(v,c)=>{const l=c.chart.data.labels[c.dataIndex];return l.length>10?l.substring(0,9)+'…':l;}
+            }}
         }
-
-        const maxVal = filteredCats[0]?.[1] || 1;
-
-        container.innerHTML = filteredCats.map(([cat, amount]) => {
-            const pct = total > 0 ? (amount / total * 100).toFixed(1) : 0;
-            const barW = (amount / maxVal * 100).toFixed(0);
-            const isWaste = WASTE_CATEGORIES.includes(cat);
-            const isNeed = NEEDS_CATEGORIES.includes(cat);
-            const isInvest = INVEST_CATEGORIES.includes(cat);
-            const color = isWaste ? 'var(--red)' : isInvest ? 'var(--green)' : isNeed ? 'var(--blue)' : 'var(--amber)';
-            const bgColor = isWaste ? 'var(--red-bg)' : isInvest ? 'var(--green-bg)' : isNeed ? 'var(--blue-bg)' : 'var(--amber-bg)';
-            const pillClass = isWaste ? 'pill-red' : isInvest ? 'pill-green' : isNeed ? 'pill-blue' : 'pill-amber';
-
-            return `
-                <div class="flex items-center gap-3">
-                    <span class="text-[11px] w-24 text-zinc-400 truncate font-bold">${cat}</span>
-                    <div class="flex-1">
-                        <div class="h-5 rounded-md overflow-hidden" style="background: ${bgColor};">
-                            <div class="h-full rounded-md transition-all duration-500" style="width: ${barW}%; background: ${color}; opacity: 0.5;"></div>
-                        </div>
-                    </div>
-                    <span class="font-mono text-[11px] font-bold w-20 text-right">${fmt(amount).replace(' RON','')}</span>
-                    <span class="pill ${pillClass} text-[9px] w-12 text-center">${pct}%</span>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function filterTx(filter) {
-        document.querySelectorAll('[data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
-        const now = new Date();
-        const filtered = getFilteredTransactions();
-        let cats = {};
-        let totalExp = 0;
-        filtered.forEach(t => {
-            const isIncome = t.type.includes('Venit') || t.type.includes('Freelance');
-            if (!isIncome) {
-                cats[t.category] = (cats[t.category] || 0) + t.amount;
-                totalExp += t.amount;
-            }
-        });
-        renderCategoryBars(cats, totalExp, filter);
-    }
-
-    function getFilteredTransactions() {
-        const now = new Date();
-        const curYear = now.getFullYear();
-        const curMonth = now.getMonth();
-
-        if (currentView === 'week') {
-            const startOfWeek = new Date(now);
-            startOfWeek.setDate(now.getDate() - now.getDay() + 1);
-            startOfWeek.setHours(0,0,0,0);
-            const endOfWeek = new Date(startOfWeek);
-            endOfWeek.setDate(startOfWeek.getDate() + 6);
-            return allTransactions.filter(t => { const d = new Date(t.date); return d >= startOfWeek && d <= endOfWeek; });
-        } else if (currentView === 'month') {
-            return allTransactions.filter(t => { const d = new Date(t.date); return d.getFullYear() === curYear && d.getMonth() === curMonth; });
-        } else {
-            return allTransactions.filter(t => new Date(t.date).getFullYear() === curYear);
-        }
-    }
-
-    // ========================
-    // TRANSACTIONS LIST
-    // ========================
-    function renderTransactions(txs) {
-        const sorted = [...txs].sort((a,b) => new Date(b.date) - new Date(a.date));
-        document.getElementById('tx-count').textContent = sorted.length + ' înregistrări';
-
-        const container = document.getElementById('tx-list');
-        container.innerHTML = sorted.map((t, i) => {
-            const isIncome = t.type.includes('Venit') || t.type.includes('Freelance');
-            const amountColor = isIncome ? 'color: var(--green);' : 'color: var(--red);';
-            const sign = isIncome ? '+' : '-';
-            const classColor = t.class === 'Creștere' ? 'pill-green' : t.class === 'Nevoie' ? 'pill-blue' : t.class === 'Stil de viață' ? 'pill-amber' : 'pill-purple';
-            const idx = allTransactions.indexOf(t);
-
-            return `
-                <div class="tx-row">
-                    <span class="text-zinc-500 font-mono text-[11px]">${new Date(t.date).toLocaleDateString('ro-RO', {day:'2-digit', month:'short'})}</span>
-                    <div>
-                        <span class="font-bold text-[12px]">${t.category}</span>
-                        <span class="text-zinc-600 ml-2 text-[10px]">${t.description || ''}</span>
-                    </div>
-                    <span class="font-mono font-bold text-right text-[12px]" style="${amountColor}">${sign}${t.amount.toLocaleString()}</span>
-                    <span class="text-center"><span class="pill ${classColor} text-[9px]">${t.class || '—'}</span></span>
-                    <div class="flex justify-end gap-1">
-                        <button onclick="editTx(${idx})" class="text-zinc-600 hover:text-white transition-colors p-1" title="Editează">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                        </button>
-                        <button onclick="deleteTx(${idx})" class="text-zinc-600 hover:text-red-400 transition-colors p-1" title="Șterge">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                        </button>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    // ========================
-    // MODAL / FORM
-    // ========================
-    function updateCategories() {
-        const type = document.getElementById('f-type').value;
-        const cats = CATEGORIES[type] || CATEGORIES["Cheltuială"];
-        document.getElementById('f-category').innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
-    }
-
-    function openAddModal() {
-        document.getElementById('modal-title').textContent = 'Adaugă Tranzacție';
-        document.getElementById('edit-index').value = '';
-        document.getElementById('txForm').reset();
-        document.getElementById('f-date').valueAsDate = new Date();
-        updateCategories();
-        document.getElementById('submit-btn').textContent = 'ADAUGĂ';
-        document.getElementById('modal').classList.add('active');
-    }
-
-    let editOriginal = null; // store original values for edit matching
-
-    function editTx(idx) {
-        const t = allTransactions[idx];
-        if (!t) return;
-
-        editOriginal = { date: t.date, category: t.category, amount: t.amount };
-
-        document.getElementById('modal-title').textContent = 'Editează Tranzacție';
-        document.getElementById('edit-index').value = idx;
-        document.getElementById('f-date').value = t.date;
-        document.getElementById('f-amount').value = t.amount;
-        document.getElementById('f-type').value = t.type;
-        updateCategories();
-        document.getElementById('f-category').value = t.category;
-        document.getElementById('f-description').value = t.description || '';
-        document.getElementById('f-class').value = t.class || 'Nevoie';
-        document.getElementById('f-importance').value = t.importance || 3;
-        document.getElementById('f-reason').value = t.reason || '';
-        document.getElementById('submit-btn').textContent = 'SALVEAZĂ';
-        document.getElementById('modal').classList.add('active');
-    }
-
-    function closeModal() {
-        document.getElementById('modal').classList.remove('active');
-    }
-
-    function deleteTx(idx) {
-        const t = allTransactions[idx];
-        if (!t) return;
-        deleteTarget = idx;
-        document.getElementById('delete-desc').textContent = `Ștergi: ${t.category} — ${t.amount} RON din ${new Date(t.date).toLocaleDateString('ro-RO')}?`;
-        document.getElementById('delete-modal').classList.add('active');
-    }
-
-    function closeDeleteModal() {
-        document.getElementById('delete-modal').classList.remove('active');
-        deleteTarget = null;
-    }
-
-    async function confirmDelete() {
-        if (deleteTarget === null) return;
-        const t = allTransactions[deleteTarget];
-        closeDeleteModal();
-        setSyncState('loading');
-
-        try {
-            await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'delete', date: t.date, category: t.category, amount: t.amount })
-            });
-            await loadData();
-        } catch(e) {
-            console.error("Delete error:", e);
-            setSyncState('error');
-        }
-    }
-
-    async function submitTransaction(e) {
-        e.preventDefault();
-        const btn = document.getElementById('submit-btn');
-        btn.disabled = true;
-        btn.textContent = 'SE PROCESEAZĂ...';
-
-        const payload = {
-            date: document.getElementById('f-date').value,
-            type: document.getElementById('f-type').value,
-            category: document.getElementById('f-category').value,
-            amount: document.getElementById('f-amount').value,
-            description: document.getElementById('f-description').value,
-            classType: document.getElementById('f-class').value,
-            importance: document.getElementById('f-importance').value,
-            reason: document.getElementById('f-reason').value
-        };
-
-        const editIdx = document.getElementById('edit-index').value;
-        if (editIdx !== '' && editOriginal) {
-            payload.action = 'edit';
-            payload.oldDate = editOriginal.date;
-            payload.oldCategory = editOriginal.category;
-            payload.oldAmount = editOriginal.amount;
-        }
-
-        try {
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-            closeModal();
-            await loadData();
-        } catch(e) {
-            console.error("Submit error:", e);
-            setSyncState('error');
-        }
-
-        btn.disabled = false;
-        btn.textContent = editIdx !== '' ? 'SALVEAZĂ' : 'ADAUGĂ';
-        editOriginal = null;
-    }
-
-    // Close modals on overlay click
-    document.getElementById('modal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
     });
-    document.getElementById('delete-modal').addEventListener('click', function(e) {
-        if (e.target === this) closeDeleteModal();
-    });
+}
 
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') { closeModal(); closeDeleteModal(); }
-        if (e.key === 'n' && !e.target.closest('form') && !e.target.closest('input')) openAddModal();
-    });
+// ========== CATEGORY BARS ==========
+function renderBarsFromTx(txs) {
+    let cats={},te=0;
+    txs.forEach(t=>{const isI=t.type.includes('Venit')||t.type.includes('Freelance');if(!isI){cats[t.category]=(cats[t.category]||0)+t.amount;te+=t.amount;}});
+    // Get current filter type button state
+    const activeBtn = document.querySelector('[data-filter].active');
+    const ft = activeBtn ? activeBtn.dataset.filter : 'all';
+    renderBars(cats,te,ft);
+}
+
+function renderBars(cats,total,filter) {
+    const s=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+    const el=document.getElementById('category-bars');
+    let fc=s;
+    if(filter==='bad')fc=s.filter(([c])=>WASTE.includes(c));
+    if(filter==='needs')fc=s.filter(([c])=>NEEDS.includes(c));
+    if(filter==='invest')fc=s.filter(([c])=>INV.includes(c));
+    if(!fc.length){el.innerHTML='<p class="text-[11px] italic py-4" style="color:var(--text-muted);">Nicio tranzacție.</p>';return;}
+    const mx=fc[0]?.[1]||1;
+    el.innerHTML=fc.map(([cat,amt])=>{
+        const p=total>0?(amt/total*100).toFixed(1):0,w=(amt/mx*100).toFixed(0);
+        const iW=WASTE.includes(cat),iN=NEEDS.includes(cat),iI=INV.includes(cat);
+        const co=iW?'var(--red)':iI?'var(--green)':iN?'var(--blue)':'var(--amber)';
+        const bg=iW?'var(--red-bg)':iI?'var(--green-bg)':iN?'var(--blue-bg)':'var(--amber-bg)';
+        const pc=iW?'pill-red':iI?'pill-green':iN?'pill-blue':'pill-amber';
+        const isActive=filters.category===cat;
+        const style=isActive?'outline:2px solid var(--text-primary);outline-offset:2px;border-radius:8px;':'';
+        return `<div class="flex items-center gap-3 cursor-pointer" style="${style}" onclick="toggleCatFilter('${cat.replace(/'/g,"\\'")}')"><span class="text-[11px] w-24 truncate font-bold" style="color:var(--text-secondary);">${cat}</span><div class="flex-1"><div class="h-5 rounded-md overflow-hidden" style="background:${bg};"><div class="h-full rounded-md transition-all duration-500" style="width:${w}%;background:${co};opacity:0.35;"></div></div></div><span class="font-mono text-[11px] font-bold w-20 text-right">${fmt(amt).replace(' RON','')}</span><span class="pill ${pc} text-[9px] w-12 text-center">${p}%</span></div>`;
+    }).join('');
+}
+
+function toggleCatFilter(cat) {
+    if (filters.category === cat) removeFilter('category');
+    else setFilter('category', cat, cat);
+}
+
+function filterType(f) {
+    document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));
+    applyFilters();
+}
+
+// ========== TRANSACTIONS ==========
+function renderTx(txs) {
+    const s=[...txs].sort((a,b)=>new Date(b.date)-new Date(a.date));
+    document.getElementById('tx-count').textContent=s.length+' înregistrări';
+    document.getElementById('tx-list').innerHTML=s.map(t=>{
+        const isI=t.type.includes('Venit')||t.type.includes('Freelance');
+        const ac=isI?'color:var(--green);':'color:var(--red);',sg=isI?'+':'-';
+        const cc=t.class==='Creștere'?'pill-green':t.class==='Nevoie'?'pill-blue':t.class==='Stil de viață'?'pill-amber':'pill-purple';
+        const idx=allTx.indexOf(t);
+        return `<div class="tx-row"><span class="font-mono text-[11px]" style="color:var(--text-muted);">${new Date(t.date).toLocaleDateString('ro-RO',{day:'2-digit',month:'short'})}</span><div><span class="font-bold text-[12px]">${t.category}</span><span class="ml-2 text-[10px]" style="color:var(--text-muted);">${t.description||''}</span></div><span class="font-mono font-bold text-right text-[12px]" style="${ac}">${sg}${t.amount.toLocaleString()}</span><span class="text-center"><span class="pill ${cc} text-[9px]">${t.class||'—'}</span></span><div class="flex justify-end gap-1"><button onclick="editTx(${idx})" style="color:var(--text-muted);" class="hover:opacity-50 transition-opacity p-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button onclick="deleteTx(${idx})" style="color:var(--text-muted);" class="hover:text-red-500 transition-colors p-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></div>`;
+    }).join('');
+}
+
+// ========== MODAL / CRUD ==========
+function updateCategories(){const t=document.getElementById('f-type').value;document.getElementById('f-category').innerHTML=(CATEGORIES[t]||CATEGORIES["Cheltuială"]).map(c=>`<option value="${c}">${c}</option>`).join('');}
+function openAddModal(){document.getElementById('modal-title').textContent='Adaugă Tranzacție';document.getElementById('edit-index').value='';document.getElementById('txForm').reset();document.getElementById('f-date').valueAsDate=new Date();updateCategories();document.getElementById('submit-btn').textContent='ADAUGĂ';document.getElementById('modal').classList.add('active');}
+function editTx(idx){const t=allTx[idx];if(!t)return;editOrig={date:t.date,category:t.category,amount:t.amount};document.getElementById('modal-title').textContent='Editează Tranzacție';document.getElementById('edit-index').value=idx;document.getElementById('f-date').value=t.date;document.getElementById('f-amount').value=t.amount;document.getElementById('f-type').value=t.type;updateCategories();document.getElementById('f-category').value=t.category;document.getElementById('f-description').value=t.description||'';document.getElementById('f-class').value=t.class||'Nevoie';document.getElementById('f-importance').value=t.importance||3;document.getElementById('f-reason').value=t.reason||'';document.getElementById('submit-btn').textContent='SALVEAZĂ';document.getElementById('modal').classList.add('active');}
+function closeModal(){document.getElementById('modal').classList.remove('active');}
+function deleteTx(idx){const t=allTx[idx];if(!t)return;delTarget=idx;document.getElementById('delete-desc').textContent=`Ștergi: ${t.category} — ${t.amount} RON din ${new Date(t.date).toLocaleDateString('ro-RO')}?`;document.getElementById('delete-modal').classList.add('active');}
+function closeDeleteModal(){document.getElementById('delete-modal').classList.remove('active');delTarget=null;}
+async function confirmDelete(){if(delTarget===null)return;const t=allTx[delTarget];closeDeleteModal();syncUI('loading');try{await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'delete',date:t.date,category:t.category,amount:t.amount})});await loadData();}catch(e){console.error(e);syncUI('error');}}
+async function submitTransaction(e){
+    e.preventDefault();const btn=document.getElementById('submit-btn');btn.disabled=true;btn.textContent='SE PROCESEAZĂ...';
+    const p={date:document.getElementById('f-date').value,type:document.getElementById('f-type').value,category:document.getElementById('f-category').value,amount:document.getElementById('f-amount').value,description:document.getElementById('f-description').value,classType:document.getElementById('f-class').value,importance:document.getElementById('f-importance').value,reason:document.getElementById('f-reason').value};
+    const ei=document.getElementById('edit-index').value;
+    if(ei!==''&&editOrig){p.action='edit';p.oldDate=editOrig.date;p.oldCategory=editOrig.category;p.oldAmount=editOrig.amount;}
+    try{await fetch(API_URL,{method:'POST',body:JSON.stringify(p)});closeModal();await loadData();}catch(e){console.error(e);syncUI('error');}
+    btn.disabled=false;btn.textContent=ei!==''?'SALVEAZĂ':'ADAUGĂ';editOrig=null;
+}
+
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('delete-modal').addEventListener('click',function(e){if(e.target===this)closeDeleteModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDeleteModal();clearAllFilters();}if(e.key==='n'&&!e.target.closest('form')&&!e.target.closest('input'))openAddModal();});
 </script>
-
 </body>
 </html>
