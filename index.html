@@ -12,13 +12,12 @@
         .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
         .cal-day { min-height: 80px; padding: 4px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: 6px; font-size: 0.75rem; }
         .cal-day.today { border-color: #0ea5e9; background: rgba(14, 165, 233, 0.1); }
-        /* Ascunde view-urile inactive */
         .view-hidden { display: none; }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
         
         <header class="text-center py-4">
             <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
@@ -40,7 +39,7 @@
                         <input type="date" id="date" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Sumă (EUR/RON)</label>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Sumă (RON)</label>
                         <input type="number" id="amount" step="0.01" min="0" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white" placeholder="0.00">
                     </div>
                     <div>
@@ -69,14 +68,13 @@
         <div id="view-strategy" class="view-hidden space-y-6">
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Target Rămas (Luna Curentă)</p><p class="text-2xl font-bold text-blue-400" id="remTarget">0 €</p></div>
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Necesar / Săptămână</p><p class="text-2xl font-bold text-emerald-400" id="weekTarget">0 €</p></div>
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Venituri Luna Curentă</p><p class="text-2xl font-bold text-green-400" id="dashIncome">0 €</p></div>
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Cheltuieli Luna Curentă</p><p class="text-2xl font-bold text-red-400" id="dashExpense">0 €</p></div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Target Rămas (Lună)</p><p class="text-2xl font-bold text-blue-400" id="remTarget">0 RON</p></div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Necesar / Săptămână</p><p class="text-2xl font-bold text-emerald-400" id="weekTarget">0 RON</p></div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Venituri Luna Curentă</p><p class="text-2xl font-bold text-green-400" id="dashIncome">0 RON</p></div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Cheltuieli Luna Curentă</p><p class="text-2xl font-bold text-red-400" id="dashExpense">0 RON</p></div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
                 <div class="glass p-6 rounded-2xl lg:col-span-2">
                     <h2 class="text-xl font-semibold text-slate-200 mb-4">Calendar Operațional (Luna Curentă)</h2>
                     <div class="cal-grid mb-1 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -86,28 +84,36 @@
                 </div>
 
                 <div class="glass p-6 rounded-2xl flex flex-col">
-                    <h2 class="text-xl font-semibold text-slate-200 mb-2">Presiune Financiară Viitoare</h2>
-                    <p class="text-xs text-slate-400 mb-4">Cheltuieli programate pe lunile următoare (când trebuie să tragi mai tare).</p>
-                    <div class="relative w-full h-48 mt-auto">
-                        <canvas id="upcomingChart"></canvas>
+                    <h2 class="text-xl font-semibold text-slate-200 mb-2">Burn Rate Săptămânal</h2>
+                    <p class="text-xs text-slate-400 mb-4">Evoluția cheltuielilor pe parcursul lunii curente.</p>
+                    <div class="relative w-full h-full min-h-[200px] mt-auto">
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass p-6 rounded-2xl flex flex-col">
+                    <h2 class="text-xl font-semibold text-slate-200 mb-2">Evoluție Lunară (Anul Curent)</h2>
+                    <p class="text-xs text-slate-400 mb-4">Comparație Venituri vs Cheltuieli pe fiecare lună.</p>
+                    <div class="relative w-full h-64 mt-auto">
+                        <canvas id="monthlyChart"></canvas>
                     </div>
                 </div>
 
-            </div>
-
-            <div class="glass p-6 rounded-2xl">
-                <h2 class="text-xl font-semibold text-slate-200 mb-4 text-center">Distribuție Clustere (Luna Curentă)</h2>
-                <div class="h-64 relative w-full flex justify-center"><canvas id="clusterChart"></canvas></div>
+                <div class="glass p-6 rounded-2xl">
+                    <h2 class="text-xl font-semibold text-slate-200 mb-4 text-center">Distribuție Clustere (Luna Curentă)</h2>
+                    <div class="h-64 relative w-full flex justify-center"><canvas id="clusterChart"></canvas></div>
+                </div>
             </div>
 
         </div>
-
     </div>
 
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxsPgZ1e0nGuU6YR0GJYm8fstYyo6OhxtjfXOmPyGrwFSTVDePFOMsFB4oGlacpMXNLnQ/exec";
 
-        // TAB SWITCHING LOGIC
+        // TAB SWITCHING
         function switchTab(tabName) {
             const viewInput = document.getElementById('view-input');
             const viewStrategy = document.getElementById('view-strategy');
@@ -115,23 +121,17 @@
             const btnStrategy = document.getElementById('tab-strategy');
 
             if (tabName === 'input') {
-                viewInput.classList.remove('view-hidden');
-                viewStrategy.classList.add('view-hidden');
-                
+                viewInput.classList.remove('view-hidden'); viewStrategy.classList.add('view-hidden');
                 btnInput.className = "px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 transition-all";
                 btnStrategy.className = "px-6 py-2 bg-slate-800 text-slate-400 font-semibold rounded-lg hover:bg-slate-700 transition-all";
             } else {
-                viewInput.classList.add('view-hidden');
-                viewStrategy.classList.remove('view-hidden');
-                
+                viewInput.classList.add('view-hidden'); viewStrategy.classList.remove('view-hidden');
                 btnStrategy.className = "px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 transition-all";
                 btnInput.className = "px-6 py-2 bg-slate-800 text-slate-400 font-semibold rounded-lg hover:bg-slate-700 transition-all";
-                
-                fetchDashboardData(); // Încarcă datele doar când intri pe pagina de Strategie
+                fetchDashboardData(); 
             }
         }
 
-        // CATEGORIES LOGIC
         const categoriesData = {
             "Cheltuială": ["Chirie", "Taxe/Facturi", "Mâncare", "Transport Zilnic", "Sănătate", "Ieșiri", "Hobby", "Haine", "Diverse"],
             "Venit": ["Salariu", "Freelance", "Bonus", "Altele"],
@@ -141,8 +141,7 @@
         document.getElementById('date').valueAsDate = new Date();
 
         function updateCategories() {
-            const type = document.getElementById('type').value;
-            const categorySelect = document.getElementById('category');
+            const type = document.getElementById('type').value; const categorySelect = document.getElementById('category');
             categorySelect.innerHTML = ""; 
             categoriesData[type].forEach(cat => {
                 let opt = document.createElement("option"); opt.value = cat; opt.text = cat; categorySelect.appendChild(opt);
@@ -150,13 +149,13 @@
         }
         updateCategories();
 
-        // CHARTS & CALENDAR
+        // CHARTS INSTANCES
         let clusterChartInstance = null;
-        let upcomingChartInstance = null;
+        let weeklyChartInstance = null;
+        let monthlyChartInstance = null;
 
         function buildCalendar(dailyData) {
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = "";
+            const grid = document.getElementById('calendarGrid'); grid.innerHTML = "";
             const now = new Date(); const year = now.getFullYear(); const month = now.getMonth(); const todayDate = now.getDate();
             let firstDay = new Date(year, month, 1).getDay(); firstDay = firstDay === 0 ? 6 : firstDay - 1; 
             const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -183,32 +182,45 @@
 
         async function fetchDashboardData() {
             try {
-                const response = await fetch(WEB_APP_URL);
+                const response = await fetch(_APP_URL);
                 const data = await response.json();
                 
-                document.getElementById('remTarget').innerText = data.strategic.remainingMonthlyTarget + " €";
-                document.getElementById('weekTarget').innerText = "~ " + data.strategic.weeklyIncomeTarget + " €";
-                document.getElementById('dashIncome').innerText = data.strategic.currentMonthIncome + " €";
-                document.getElementById('dashExpense').innerText = data.strategic.currentMonthExpense + " €";
+                // KPIs
+                document.getElementById('remTarget').innerText = data.strategic.remainingMonthlyTarget + " RON";
+                document.getElementById('weekTarget').innerText = "~ " + data.strategic.weeklyIncomeTarget + " RON";
+                document.getElementById('dashIncome').innerText = data.strategic.currentMonthIncome + " RON";
+                document.getElementById('dashExpense').innerText = data.strategic.currentMonthExpense + " RON";
                 
                 buildCalendar(data.calendar);
 
-                // Cluster Chart
+                // 1. Cluster Chart
                 if(clusterChartInstance) clusterChartInstance.destroy();
-                const ctxCluster = document.getElementById('clusterChart').getContext('2d');
-                clusterChartInstance = new Chart(ctxCluster, {
+                clusterChartInstance = new Chart(document.getElementById('clusterChart').getContext('2d'), {
                     type: 'doughnut',
                     data: { labels: Object.keys(data.clusters), datasets: [{ data: Object.values(data.clusters), backgroundColor: ['#ef4444', '#f59e0b', '#8b5cf6', '#10b981'], borderWidth: 0 }] },
                     options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: {color: '#cbd5e1'} } } }
                 });
 
-                // Upcoming Load Chart (Presiunea viitoare)
-                if(upcomingChartInstance) upcomingChartInstance.destroy();
-                const ctxUpcoming = document.getElementById('upcomingChart').getContext('2d');
-                upcomingChartInstance = new Chart(ctxUpcoming, {
+                // 2. Weekly Burn Rate Chart (Bar)
+                if(weeklyChartInstance) weeklyChartInstance.destroy();
+                weeklyChartInstance = new Chart(document.getElementById('weeklyChart').getContext('2d'), {
                     type: 'bar',
-                    data: { labels: Object.keys(data.upcomingLoad), datasets: [{ label: 'Necesar (€)', data: Object.values(data.upcomingLoad), backgroundColor: '#f59e0b', borderRadius: 4 }] },
+                    data: { labels: Object.keys(data.weeklyExpenses), datasets: [{ label: 'Cheltuit (RON)', data: Object.values(data.weeklyExpenses), backgroundColor: '#ef4444', borderRadius: 4 }] },
                     options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }, plugins: { legend: { display: false } } }
+                });
+
+                // 3. Monthly Trend Chart (Bar Grouped)
+                if(monthlyChartInstance) monthlyChartInstance.destroy();
+                monthlyChartInstance = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+                    type: 'bar',
+                    data: { 
+                        labels: data.monthsLabels, 
+                        datasets: [
+                            { label: 'Venituri', data: data.monthlyStats.income, backgroundColor: '#10b981', borderRadius: 4 },
+                            { label: 'Cheltuieli', data: data.monthlyStats.expense, backgroundColor: '#ef4444', borderRadius: 4 }
+                        ] 
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }, plugins: { legend: { labels: { color: '#cbd5e1' } } } }
                 });
 
             } catch (error) { console.error("Eroare la fetch:", error); }
@@ -239,4 +251,3 @@
     </script>
 </body>
 </html>
-
