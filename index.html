@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal CEO | Investor OS</title>
+    <title>Personal CEO | Executive OS V12</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
@@ -12,8 +12,8 @@
         body { background-color: #020617; color: #f1f5f9; font-family: 'Inter', sans-serif; }
         .executive-header { font-family: 'Orbitron', sans-serif; }
         .glass { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
-        .view-hidden { display: none; }
-        .cal-day { min-height: 60px; background: #1e293b; border-radius: 0.5rem; padding: 4px; border: 1px solid #334155; }
+        .clickable-chart { cursor: pointer; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
     </style>
 </head>
 <body class="p-4 lg:p-8">
@@ -21,7 +21,8 @@
     <div class="max-w-[1700px] mx-auto space-y-8">
         <header class="flex justify-between items-end border-b border-slate-800 pb-6">
             <div>
-                <h1 class="executive-header text-2xl font-black tracking-[0.4em] text-white">THE EXECUTIVE <span class="text-blue-500 italic">OS</span></h1>
+                <h1 class="executive-header text-2xl font-black tracking-[0.4em] text-white">SYSTEM <span class="text-blue-500">CFO</span></h1>
+                <p id="focus-month" class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Status: Active Monitoring</p>
             </div>
             <div id="sync-status" class="text-[10px] font-bold text-blue-400 animate-pulse uppercase tracking-widest">Sincronizare LIVE...</div>
         </header>
@@ -60,7 +61,7 @@
                         </div>
                         <div>
                             <div class="flex justify-between text-[9px] font-black mb-1">
-                                <span id="roi-label" class="text-slate-500 uppercase">BREAK-EVEN: $44.44</span>
+                                <span id="roi-label" class="text-slate-500">BREAK-EVEN: $44.44</span>
                                 <span id="roi-percent" class="text-white">0%</span>
                             </div>
                             <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
@@ -77,31 +78,31 @@
                         <p class="text-[9px] font-bold text-slate-500 uppercase mb-1">Cashflow Margin</p>
                         <p class="text-3xl font-black text-blue-400" id="stat-margin">0%</p>
                     </div>
-                    <div class="glass p-6 border-b-4 border-emerald-500 bg-emerald-500/5 text-center ring-4 ring-emerald-500/10">
+                    <div class="glass p-6 border-b-4 border-emerald-500 bg-emerald-500/5 text-center">
                         <p class="text-[9px] font-bold text-emerald-500 uppercase mb-1 italic">Aer Liber (Safe to Spend)</p>
                         <p class="text-4xl font-black text-emerald-400" id="stat-free">0 RON</p>
                     </div>
-                    <div class="glass p-6 border-b-4 border-slate-700 text-center">
-                        <p class="text-[9px] font-bold text-slate-500 uppercase mb-1">Audit Stat</p>
-                        <p class="text-xl font-black text-white" id="stat-focus">Active Martie</p>
+                    <div class="glass p-6 border-b-4 border-white text-center">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase mb-1">Target Rămas</p>
+                        <p class="text-3xl font-black text-white" id="stat-target">0 RON</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="glass p-8">
                         <h3 class="executive-header text-[9px] font-bold text-slate-500 uppercase mb-8 tracking-widest">Revenue vs OPEX Trends</h3>
-                        <div class="h-72"><canvas id="mainChart"></canvas></div>
+                        <div class="h-72"><canvas id="mainChart" class="clickable-chart"></canvas></div>
                     </div>
                     <div class="glass p-8">
                         <h3 class="executive-header text-[9px] font-bold text-slate-500 uppercase mb-8 tracking-widest text-center">Capital Clusters</h3>
-                        <div class="h-72 flex justify-center"><canvas id="clusterChart"></canvas></div>
+                        <div class="h-72 flex justify-center"><canvas id="clusterChart" class="clickable-chart"></canvas></div>
                     </div>
                 </div>
 
                 <div class="glass p-8 border-l-4 border-blue-600">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="executive-header text-[10px] font-bold text-blue-400 uppercase tracking-widest italic">Registru Audit Strategic</h3>
-                        <button onclick="loadData()" class="text-[8px] bg-slate-800 px-4 py-2 rounded-full text-slate-400 hover:text-white uppercase font-black">Refresh Data</button>
+                        <h3 class="executive-header text-[10px] font-bold text-blue-400 uppercase tracking-widest">Registru Audit (Click pe grafice pentru filtrare)</h3>
+                        <button onclick="resetAudit()" class="text-[8px] bg-slate-800 px-4 py-2 rounded-full text-slate-400 hover:text-white uppercase font-black">Reset Filtre</button>
                     </div>
                     <div class="overflow-x-auto max-h-[300px]">
                         <table class="w-full text-left text-[11px]">
@@ -118,18 +119,13 @@
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxsPgZ1e0nGuU6YR0GJYm8fstYyo6OhxtjfXOmPyGrwFSTVDePFOMsFB4oGlacpMXNLnQ/exec"; 
-        const CATS = {
-            "Venit Fix (Salariu)": ["Salariu Bază"],
-            "Cheltuială Fixă (Lunară)": ["Chirie", "Credit/Rată", "Utilități", "Abonamente"],
-            "Cheltuială": ["Mâncare", "Transport", "Ieșiri", "Sănătate", "Diverse"],
-            "Investiție": ["Bursă/ETF", "Crypto", "Fond Freelancing"],
-            "Cheltuială Viitoare": ["Mașină", "Nunți", "Vacanțe"]
-        };
-
+        const MONTH_NAMES = ["Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+        // ACTIVARE PLUGIN ETICHETE
         Chart.register(ChartDataLabels);
+        let allTransactions = [];
         let charts = {};
 
-        // LIVE EGLD LOGIC
         async function fetchEGLD() {
             try {
                 const r = await fetch('https://api.coingecko.com/api/v2/simple/price?ids=elrond-erd-2&vs_currencies=usd');
@@ -137,11 +133,9 @@
                 const price = d['elrond-erd-2'].usd;
                 const value = price * 450;
                 const roi = ((value - 20000) / 20000) * 100;
-
                 document.getElementById('egld-price').innerText = `$${price.toFixed(2)}`;
                 document.getElementById('egld-value').innerText = `$${Math.round(value).toLocaleString()}`;
                 document.getElementById('roi-percent').innerText = (roi >= 0 ? "+" : "") + roi.toFixed(1) + "%";
-                
                 const bar = document.getElementById('roi-bar');
                 const label = document.getElementById('roi-label');
                 bar.className = roi >= 0 ? "h-full bg-emerald-500" : "h-full bg-rose-500";
@@ -151,6 +145,13 @@
         }
 
         function syncUI() {
+            const CATS = {
+                "Venit Fix (Salariu)": ["Salariu Bază"],
+                "Cheltuială Fixă (Lunară)": ["Chirie", "Credit/Rată", "Utilități", "Abonamente"],
+                "Cheltuială": ["Mâncare", "Transport", "Ieșiri", "Sănătate", "Diverse"],
+                "Investiție": ["Bursă/ETF", "Crypto", "Fond Freelancing"],
+                "Cheltuială Viitoare": ["Mașină", "Nunți", "Vacanțe"]
+            };
             const t = document.getElementById('type').value;
             document.getElementById('category').innerHTML = (CATS[t] || CATS["Cheltuială"]).map(c => `<option value="${c}">${c}</option>`).join('');
         }
@@ -161,41 +162,95 @@
             try {
                 const res = await fetch(API_URL);
                 const d = await res.json();
-                
-                document.getElementById('stat-margin').innerText = d.summary.income > 0 ? (((d.summary.income - d.summary.fixed - d.summary.variable) / d.summary.income) * 100).toFixed(1) + "%" : "0%";
-                document.getElementById('stat-free').innerText = Math.round(d.summary.income - d.summary.fixed - d.summary.variable) + " RON";
-                
-                renderCharts(d);
-                renderAudit(d.transactions);
+                allTransactions = d.transactions;
+                processAndRender(null, null, d);
                 document.getElementById('sync-status').classList.add('hidden');
             } catch(e) { console.error("Fetch Error"); }
         }
 
-        function renderCharts(d) {
+        function processAndRender(fM, fC, rawData) {
+            const curM = new Date().getMonth();
+            const curY = new Date().getFullYear();
+            const config = {
+                "Supraviețuire": ["Chirie", "Utilități", "Mâncare", "Sănătate"],
+                "Stil de viață": ["Ieșiri", "Hobby", "Haine", "Abonamente"],
+                "Responsabilități": ["Credit/Rată", "Mașină", "Nunți"],
+                "Wealth Building": ["Bursă/ETF", "Crypto", "Fond Freelancing"]
+            };
+
+            let clusters = { "Supraviețuire": 0, "Stil de viață": 0, "Responsabilități": 0, "Wealth Building": 0 };
+            let auditList = [];
+
+            // Filtrăm lista de audit și calculăm clusterele pe luna selectată
+            allTransactions.forEach(t => {
+                const d = new Date(t.date);
+                if (d.getFullYear() !== curY) return;
+                const m = d.getMonth();
+                const targetM = fM !== null ? fM : curM;
+
+                if (m === targetM) {
+                    for (let cl in config) if (config[cl].includes(t.category)) clusters[cl] += t.amount;
+                }
+
+                if ((fM === null || m === fM) && (fC === null || (config[fC] && config[fC].includes(t.category)))) {
+                    if(!t.type.includes("Venit")) auditList.push(t);
+                }
+            });
+
+            document.getElementById('stat-margin').innerText = rawData.summary.income > 0 ? (((rawData.summary.income - rawData.summary.fixed - rawData.summary.variable) / rawData.summary.income) * 100).toFixed(1) + "%" : "0%";
+            document.getElementById('stat-free').innerText = Math.round(rawData.summary.income - rawData.summary.fixed - rawData.summary.variable) + " RON";
+            document.getElementById('stat-target').innerText = (rawData.summary.target - rawData.summary.income) + " RON";
+
+            renderCharts(rawData.charts.incArr, rawData.charts.expArr, clusters);
+            renderAudit(auditList);
+        }
+
+        function renderCharts(inc, exp, cl) {
             const ctx1 = document.getElementById('mainChart').getContext('2d');
             if(charts.main) charts.main.destroy();
             charts.main = new Chart(ctx1, {
-                type: 'line', data: { labels: ['Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun', 'Iul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], datasets: [{ label: 'REV', data: d.charts.incArr, borderColor: '#10b981', tension: 0.3 }, { label: 'EXP', data: d.charts.expArr, borderColor: '#f43f5e', tension: 0.3 }]},
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, datalabels: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#64748b' } } } }
+                type: 'line', data: { labels: MONTH_NAMES, datasets: [{ label: 'REV', data: inc, borderColor: '#10b981', backgroundColor: '#10b981', tension: 0.3 }, { label: 'EXP', data: exp, borderColor: '#f43f5e', backgroundColor: '#f43f5e', tension: 0.3 }]},
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { display: false }, 
+                        datalabels: { 
+                            display: true, color: '#fff', align: 'top', font: { weight: 'bold', size: 9 },
+                            formatter: (v) => v > 0 ? Math.round(v) : ''
+                        } 
+                    }, 
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#475569' } }}
+                }
             });
 
             const ctx2 = document.getElementById('clusterChart').getContext('2d');
             if(charts.cluster) charts.cluster.destroy();
             charts.cluster = new Chart(ctx2, {
-                type: 'doughnut', data: { labels: Object.keys(d.charts.clusters), datasets: [{ data: Object.values(d.charts.clusters), backgroundColor: ['#3b82f6', '#fbbf24', '#f43f5e', '#10b981'], borderWidth: 0 }]},
-                options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false }, datalabels: { color: '#fff', font: { weight: 'bold', size: 10 }, formatter: (v, ctx) => v > 0 ? ctx.chart.data.labels[ctx.dataIndex] : '' } } }
+                type: 'doughnut', data: { labels: Object.keys(cl), datasets: [{ data: Object.values(cl), backgroundColor: ['#3b82f6', '#fbbf24', '#f43f5e', '#10b981'], borderWidth: 0 }]},
+                options: { 
+                    responsive: true, maintainAspectRatio: false, cutout: '80%', 
+                    plugins: { 
+                        legend: { display: false }, 
+                        datalabels: { 
+                            display: true, color: '#fff', font: { weight: 'bold', size: 10 }, 
+                            formatter: (v, ctx) => v > 0 ? ctx.chart.data.labels[ctx.dataIndex] : '' 
+                        } 
+                    } 
+                }
             });
         }
 
         function renderAudit(list) {
             const body = document.getElementById('auditTableBody');
-            body.innerHTML = list.reverse().map(t => `<tr class="border-b border-slate-800/50 hover:bg-slate-800/20"><td class="py-3 opacity-50">${new Date(t.date).toLocaleDateString('ro-RO')}</td><td class="py-3 font-bold">${t.category}</td><td class="py-3 text-right text-rose-400 font-black">${t.amount} RON</td><td class="py-3 italic opacity-60">${t.reason || '-'}</td></tr>`).join('');
+            body.innerHTML = list.map(t => `<tr class="border-b border-slate-800/50 hover:bg-slate-800/20"><td class="py-3 opacity-50">${new Date(t.date).toLocaleDateString('ro-RO')}</td><td class="py-3 font-bold">${t.category}</td><td class="py-3 text-right text-rose-400 font-black">${t.amount} RON</td><td class="py-3 italic opacity-60">${t.reason || '-'}</td></tr>`).join('');
         }
+
+        function resetAudit() { loadData(); }
 
         async function handleForm(e) {
             e.preventDefault();
             const btn = document.getElementById('subBtn'); btn.disabled = true; btn.innerText = "EXECUTING...";
-            const p = { date: document.getElementById('date').value, type: document.getElementById('type').value, category: document.getElementById('category').value, amount: document.getElementById('amount').value, classType: 'Nevoie', importance: 5, reason: 'Manual Entry' };
+            const p = { date: document.getElementById('date').value, type: document.getElementById('type').value, category: document.getElementById('category').value, amount: document.getElementById('amount').value, classType: 'Nevoie', importance: 5, reason: 'Manual' };
             await fetch(API_URL, { method: 'POST', body: JSON.stringify(p) });
             location.reload();
         }
