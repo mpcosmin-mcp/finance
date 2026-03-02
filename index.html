@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial OS | CFO View</title>
+    <title>Financial OS | The CFO Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -13,6 +13,8 @@
         .cal-day { min-height: 80px; padding: 4px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: 6px; font-size: 0.75rem; }
         .cal-day.today { border-color: #0ea5e9; background: rgba(14, 165, 233, 0.1); }
         .view-hidden { display: none; }
+        /* Slider custom */
+        input[type=range] { accent-color: #0ea5e9; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -20,47 +22,76 @@
     <div class="max-w-7xl mx-auto space-y-6">
         
         <header class="text-center py-4">
-            <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-                Financial OS
+            <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400">
+                Financial OS <span class="text-sm text-slate-400 ml-2">CFO Edition</span>
             </h1>
         </header>
 
         <nav class="flex justify-center space-x-4 mb-6">
             <button onclick="switchTab('input')" id="tab-input" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 transition-all">📝 Loghează Date</button>
-            <button onclick="switchTab('strategy')" id="tab-strategy" class="px-6 py-2 bg-slate-800 text-slate-400 font-semibold rounded-lg hover:bg-slate-700 transition-all">📊 Strategie & Analiză</button>
+            <button onclick="switchTab('strategy')" id="tab-strategy" class="px-6 py-2 bg-slate-800 text-slate-400 font-semibold rounded-lg hover:bg-slate-700 transition-all">📈 Strategie & ROI</button>
         </nav>
 
-        <div id="view-input" class="glass p-6 md:p-10 rounded-2xl max-w-2xl mx-auto">
-            <h2 class="text-2xl font-semibold mb-6 text-slate-200 text-center">Introducere Tranzacție</h2>
-            <form id="financeForm" onsubmit="submitForm(event)" class="space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div id="view-input" class="glass p-6 md:p-10 rounded-2xl max-w-3xl mx-auto">
+            <h2 class="text-2xl font-semibold mb-6 text-slate-200 text-center">Analiza Tranzacției</h2>
+            <form id="financeForm" onsubmit="submitForm(event)" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 border-b border-slate-700 pb-6">
                     <div>
                         <label class="block text-sm font-medium text-slate-400 mb-1">Dată</label>
                         <input type="date" id="date" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-400 mb-1">Sumă (RON)</label>
-                        <input type="number" id="amount" step="0.01" min="0" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white" placeholder="0.00">
+                        <input type="number" id="amount" step="0.01" min="0" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white font-bold text-emerald-400">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Tip Tranzacție</label>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Tip</label>
                         <select id="type" onchange="updateCategories()" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white">
                             <option value="Cheltuială">Cheltuială (Curentă)</option>
                             <option value="Venit">Venit</option>
                             <option value="Investiție">Investiție / Economii</option>
-                            <option value="Cheltuială Viitoare">Cheltuială Viitoare (Planificare)</option>
+                            <option value="Cheltuială Viitoare">Cheltuială Viitoare</option>
                         </select>
                     </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                         <label class="block text-sm font-medium text-slate-400 mb-1">Categorie</label>
                         <select id="category" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white"></select>
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Clasă (Regula 50/30/20)</label>
+                        <select id="classType" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white">
+                            <option value="Nevoie">Nevoie (Supraviețuire)</option>
+                            <option value="Dorință">Dorință (Răsfăț/Impuls)</option>
+                            <option value="Creștere">Creștere (Investiții/Educație)</option>
+                        </select>
+                    </div>
                 </div>
+
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-1">Descriere (Opțional)</label>
-                    <input type="text" id="description" class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white" placeholder="Detalii factură, nume client, etc...">
+                    <label class="block text-sm font-medium text-slate-400 mb-2">Importanța / ROI (1 = Regret | 5 = Impact Maxim)</label>
+                    <div class="flex items-center gap-4">
+                        <span class="text-xs text-red-400 font-bold">1</span>
+                        <input type="range" id="importance" min="1" max="5" value="3" class="w-full cursor-pointer" oninput="document.getElementById('impVal').innerText = this.value">
+                        <span class="text-xs text-emerald-400 font-bold">5</span>
+                        <span id="impVal" class="bg-slate-700 px-3 py-1 rounded-lg font-bold text-white w-10 text-center">3</span>
+                    </div>
                 </div>
-                <button type="submit" id="submitBtn" class="w-full py-4 text-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg transition-colors shadow-lg">Salvează în Baza de Date</button>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Justificare / Motiv</label>
+                        <input type="text" id="reason" class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white" placeholder="Ex: Eram stresat, Mentenanță...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Scurtă Descriere</label>
+                        <input type="text" id="description" class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white" placeholder="Ex: Bolt către birou...">
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full py-4 text-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg transition-colors shadow-lg shadow-indigo-500/30 mt-4">Procesează Tranzacția</button>
                 <div id="statusMessage" class="text-center text-sm font-bold mt-2 hidden"></div>
             </form>
         </div>
@@ -68,15 +99,38 @@
         <div id="view-strategy" class="view-hidden space-y-6">
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Target Rămas (Lună)</p><p class="text-2xl font-bold text-blue-400" id="remTarget">0 RON</p></div>
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Necesar / Săptămână</p><p class="text-2xl font-bold text-emerald-400" id="weekTarget">0 RON</p></div>
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Venituri Luna Curentă</p><p class="text-2xl font-bold text-green-400" id="dashIncome">0 RON</p></div>
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Cheltuieli Luna Curentă</p><p class="text-2xl font-bold text-red-400" id="dashExpense">0 RON</p></div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Total Cheltuieli</p><p class="text-2xl font-bold text-white" id="dashExpense">0 RON</p></div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 h-full w-2 bg-red-500"></div>
+                    <p class="text-xs text-slate-400 uppercase" title="Suma cheltuielilor cu nota 1 sau 2">The Waste Tax (Risipă)</p>
+                    <p class="text-2xl font-bold text-red-400" id="wasteTax">0 RON</p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 h-full w-2 bg-emerald-500"></div>
+                    <p class="text-xs text-slate-400 uppercase" title="Suma cheltuielilor cu nota 4 sau 5">True ROI (Investit bine)</p>
+                    <p class="text-2xl font-bold text-emerald-400" id="trueRoi">0 RON</p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700"><p class="text-xs text-slate-400 uppercase">Target Venit Rămas</p><p class="text-2xl font-bold text-blue-400" id="remTarget">0 RON</p></div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="glass p-6 rounded-2xl lg:col-span-2">
-                    <h2 class="text-xl font-semibold text-slate-200 mb-4">Calendar Operațional (Luna Curentă)</h2>
+                <div class="glass p-6 rounded-2xl lg:col-span-2 flex flex-col">
+                    <h2 class="text-xl font-semibold text-slate-200 mb-2">Weekly Burn Velocity (Nevoi vs Dorințe)</h2>
+                    <p class="text-xs text-slate-400 mb-4">Unde se duc banii tăi în fiecare săptămână din lună.</p>
+                    <div class="relative w-full h-full min-h-[250px] mt-auto">
+                        <canvas id="weeklyBurnChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-2xl">
+                    <h2 class="text-xl font-semibold text-slate-200 mb-4 text-center">Clustere (Macro)</h2>
+                    <div class="h-64 relative w-full flex justify-center"><canvas id="clusterChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass p-6 rounded-2xl">
+                    <h2 class="text-xl font-semibold text-slate-200 mb-4">Calendar Operațional</h2>
                     <div class="cal-grid mb-1 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">
                         <div>Lu</div><div>Ma</div><div>Mi</div><div>Jo</div><div>Vi</div><div>Sâ</div><div>Du</div>
                     </div>
@@ -84,26 +138,10 @@
                 </div>
 
                 <div class="glass p-6 rounded-2xl flex flex-col">
-                    <h2 class="text-xl font-semibold text-slate-200 mb-2">Burn Rate Săptămânal</h2>
-                    <p class="text-xs text-slate-400 mb-4">Evoluția cheltuielilor pe parcursul lunii curente.</p>
-                    <div class="relative w-full h-full min-h-[200px] mt-auto">
-                        <canvas id="weeklyChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="glass p-6 rounded-2xl flex flex-col">
-                    <h2 class="text-xl font-semibold text-slate-200 mb-2">Evoluție Lunară (Anul Curent)</h2>
-                    <p class="text-xs text-slate-400 mb-4">Comparație Venituri vs Cheltuieli pe fiecare lună.</p>
+                    <h2 class="text-xl font-semibold text-slate-200 mb-2">Evoluție YTD (Anul Curent)</h2>
                     <div class="relative w-full h-64 mt-auto">
                         <canvas id="monthlyChart"></canvas>
                     </div>
-                </div>
-
-                <div class="glass p-6 rounded-2xl">
-                    <h2 class="text-xl font-semibold text-slate-200 mb-4 text-center">Distribuție Clustere (Luna Curentă)</h2>
-                    <div class="h-64 relative w-full flex justify-center"><canvas id="clusterChart"></canvas></div>
                 </div>
             </div>
 
@@ -126,7 +164,7 @@
                 btnStrategy.className = "px-6 py-2 bg-slate-800 text-slate-400 font-semibold rounded-lg hover:bg-slate-700 transition-all";
             } else {
                 viewInput.classList.add('view-hidden'); viewStrategy.classList.remove('view-hidden');
-                btnStrategy.className = "px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 transition-all";
+                btnStrategy.className = "px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg shadow-indigo-500/30 transition-all";
                 btnInput.className = "px-6 py-2 bg-slate-800 text-slate-400 font-semibold rounded-lg hover:bg-slate-700 transition-all";
                 fetchDashboardData(); 
             }
@@ -146,12 +184,16 @@
             categoriesData[type].forEach(cat => {
                 let opt = document.createElement("option"); opt.value = cat; opt.text = cat; categorySelect.appendChild(opt);
             });
+            // Auto-select Class based on type
+            const classSelect = document.getElementById('classType');
+            if(type === 'Investiție') classSelect.value = 'Creștere';
+            else if(type === 'Venit') classSelect.value = 'Creștere';
         }
         updateCategories();
 
         // CHARTS INSTANCES
         let clusterChartInstance = null;
-        let weeklyChartInstance = null;
+        let weeklyBurnChartInstance = null;
         let monthlyChartInstance = null;
 
         function buildCalendar(dailyData) {
@@ -167,14 +209,6 @@
                 if(dailyData[d]) {
                     if(dailyData[d].income > 0) content += `<div class="text-emerald-400 font-bold truncate">+${dailyData[d].income}</div>`;
                     if(dailyData[d].expense > 0) content += `<div class="text-red-400 font-bold truncate">-${dailyData[d].expense}</div>`;
-                    if(dailyData[d].events.length > 0) {
-                        content += `<div class="flex flex-wrap gap-1 mt-auto pt-1">`;
-                        dailyData[d].events.forEach(ev => {
-                            let color = ev.type === 'Venit' ? 'bg-emerald-400' : (ev.type === 'Cheltuială' ? 'bg-red-400' : 'bg-blue-400');
-                            content += `<div class="w-2 h-2 rounded-full ${color}" title="${ev.cat}: ${ev.amt}"></div>`;
-                        });
-                        content += `</div>`;
-                    }
                 }
                 content += `</div>`; grid.innerHTML += content;
             }
@@ -182,18 +216,40 @@
 
         async function fetchDashboardData() {
             try {
-                const response = await fetch(_APP_URL);
+                const response = await fetch(WEB_APP_URL);
                 const data = await response.json();
                 
-                // KPIs
-                document.getElementById('remTarget').innerText = data.strategic.remainingMonthlyTarget + " RON";
-                document.getElementById('weekTarget').innerText = "~ " + data.strategic.weeklyIncomeTarget + " RON";
-                document.getElementById('dashIncome').innerText = data.strategic.currentMonthIncome + " RON";
-                document.getElementById('dashExpense').innerText = data.strategic.currentMonthExpense + " RON";
+                // CFO KPIs
+                document.getElementById('dashExpense').innerText = data.cfo.currentMonthExpense + " RON";
+                document.getElementById('wasteTax').innerText = data.cfo.wasteTax + " RON";
+                document.getElementById('trueRoi').innerText = data.cfo.trueRoi + " RON";
+                document.getElementById('remTarget').innerText = data.cfo.remainingMonthlyTarget + " RON";
                 
                 buildCalendar(data.calendar);
 
-                // 1. Cluster Chart
+                // 1. Weekly Burn Velocity (Stacked Bar)
+                const weekLabels = Object.keys(data.weeklyBurn);
+                const needsData = weekLabels.map(l => data.weeklyBurn[l].need);
+                const wantsData = weekLabels.map(l => data.weeklyBurn[l].want);
+
+                if(weeklyBurnChartInstance) weeklyBurnChartInstance.destroy();
+                weeklyBurnChartInstance = new Chart(document.getElementById('weeklyBurnChart').getContext('2d'), {
+                    type: 'bar',
+                    data: { 
+                        labels: weekLabels, 
+                        datasets: [
+                            { label: 'Nevoi & Creștere', data: needsData, backgroundColor: '#3b82f6', borderRadius: 4 },
+                            { label: 'Dorințe (Wants)', data: wantsData, backgroundColor: '#ef4444', borderRadius: 4 }
+                        ] 
+                    },
+                    options: { 
+                        responsive: true, maintainAspectRatio: false, 
+                        scales: { x: { stacked: true, ticks: { color: '#94a3b8' }, grid: { display: false } }, y: { stacked: true, display: false } }, 
+                        plugins: { legend: { labels: { color: '#cbd5e1' } } } 
+                    }
+                });
+
+                // 2. Cluster Chart
                 if(clusterChartInstance) clusterChartInstance.destroy();
                 clusterChartInstance = new Chart(document.getElementById('clusterChart').getContext('2d'), {
                     type: 'doughnut',
@@ -201,15 +257,7 @@
                     options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: {color: '#cbd5e1'} } } }
                 });
 
-                // 2. Weekly Burn Rate Chart (Bar)
-                if(weeklyChartInstance) weeklyChartInstance.destroy();
-                weeklyChartInstance = new Chart(document.getElementById('weeklyChart').getContext('2d'), {
-                    type: 'bar',
-                    data: { labels: Object.keys(data.weeklyExpenses), datasets: [{ label: 'Cheltuit (RON)', data: Object.values(data.weeklyExpenses), backgroundColor: '#ef4444', borderRadius: 4 }] },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } }, plugins: { legend: { display: false } } }
-                });
-
-                // 3. Monthly Trend Chart (Bar Grouped)
+                // 3. Monthly Trend Chart
                 if(monthlyChartInstance) monthlyChartInstance.destroy();
                 monthlyChartInstance = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
                     type: 'bar',
@@ -231,22 +279,30 @@
             event.preventDefault();
             const btn = document.getElementById('submitBtn'); const status = document.getElementById('statusMessage');
             btn.innerText = "Se trimite la Google..."; btn.disabled = true;
-            status.className = "text-center text-sm mt-2 text-cyan-400 block"; status.innerText = "Conectare securizată...";
+            status.className = "text-center text-sm mt-2 text-indigo-400 block"; status.innerText = "Conectare securizată...";
 
             const payload = {
-                date: document.getElementById('date').value, type: document.getElementById('type').value,
-                category: document.getElementById('category').value, amount: document.getElementById('amount').value,
-                description: document.getElementById('description').value
+                date: document.getElementById('date').value, 
+                type: document.getElementById('type').value,
+                category: document.getElementById('category').value, 
+                amount: document.getElementById('amount').value,
+                description: document.getElementById('description').value,
+                classType: document.getElementById('classType').value,
+                importance: document.getElementById('importance').value,
+                reason: document.getElementById('reason').value
             };
 
             fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
             .then(() => {
-                status.innerText = "Date salvate cu succes!"; status.classList.replace("text-cyan-400", "text-emerald-400");
-                document.getElementById('financeForm').reset(); document.getElementById('date').valueAsDate = new Date(); updateCategories(); 
+                status.innerText = "Tranzacție salvată!"; status.classList.replace("text-indigo-400", "text-emerald-400");
+                document.getElementById('financeForm').reset(); 
+                document.getElementById('date').valueAsDate = new Date(); 
+                document.getElementById('impVal').innerText = "3"; // reset slider text
+                updateCategories(); 
                 setTimeout(() => status.classList.add("hidden"), 3000);
             })
-            .catch(() => { status.innerText = "Eroare de conexiune!"; status.classList.replace("text-cyan-400", "text-red-500"); })
-            .finally(() => { btn.innerText = "Salvează în Baza de Date"; btn.disabled = false; });
+            .catch(() => { status.innerText = "Eroare de conexiune!"; status.classList.replace("text-indigo-400", "text-red-500"); })
+            .finally(() => { btn.innerText = "Procesează Tranzacția"; btn.disabled = false; });
         }
     </script>
 </body>
