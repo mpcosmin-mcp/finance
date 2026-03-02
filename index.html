@@ -3,116 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal CEO | Financial OS</title>
+    <title>CFO Personal OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background-color: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; }
-        .card { background: #0f172a; border: 1px solid #1e293b; border-radius: 1rem; padding: 1.5rem; }
-        .stat-value { font-size: 1.875rem; font-weight: 800; }
+        body { background-color: #020617; color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        .glass { background: #0f172a; border: 1px solid #1e293b; border-radius: 1rem; }
         .view-hidden { display: none; }
-        .cal-day { min-height: 70px; background: #1e293b; border-radius: 0.5rem; padding: 0.25rem; font-size: 0.7rem; border: 1px solid #334155; }
-        .cal-today { border-color: #38bdf8; background: rgba(56, 189, 248, 0.1); }
-        input[type=range] { accent-color: #38bdf8; }
+        .cal-day { min-height: 65px; background: #1e293b; border-radius: 0.5rem; border: 1px solid #334155; padding: 4px; font-size: 0.7rem; }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="p-4 md:p-8">
 
-    <div class="max-w-7xl mx-auto space-y-8">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-                <h1 class="text-3xl font-black tracking-tighter text-white uppercase">CFO <span class="text-sky-500">Dashboard</span></h1>
-                <p class="text-slate-500 text-sm">Truth. Discipline. Wealth.</p>
-            </div>
-            <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
-                <button onclick="showPage('input')" id="btn-input" class="px-6 py-2 rounded-lg font-bold transition-all bg-sky-600 text-white shadow-lg">INPUT</button>
-                <button onclick="showPage('strategy')" id="btn-strategy" class="px-6 py-2 rounded-lg font-bold transition-all text-slate-400">STRATEGY</button>
-            </div>
+    <div class="max-w-6xl mx-auto space-y-6">
+        <div class="flex justify-between items-center bg-slate-900 p-2 rounded-2xl border border-slate-800">
+            <button onclick="showPage('input')" id="btn-input" class="flex-1 py-3 rounded-xl font-bold transition-all bg-blue-600 text-white">📝 INPUT</button>
+            <button onclick="showPage('strategy')" id="btn-strategy" class="flex-1 py-3 rounded-xl font-bold transition-all text-slate-400">📊 STRATEGIE</button>
         </div>
 
-        <div id="page-input" class="max-w-3xl mx-auto space-y-6">
-            <div class="card border-sky-900/50 shadow-2xl shadow-sky-900/10">
-                <h2 class="text-xl font-bold mb-6 flex items-center gap-2 text-sky-400 underline decoration-sky-500/30">Loghează Tranzacție</h2>
-                <form id="financeForm" onsubmit="handleForm(event)" class="space-y-5">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="date" id="date" required class="bg-slate-800 p-3 rounded-lg border border-slate-700 outline-none focus:border-sky-500 text-white">
-                        <input type="number" id="amount" step="0.01" placeholder="Suma (RON)" required class="bg-slate-800 p-3 rounded-lg border border-slate-700 font-bold text-emerald-400 outline-none focus:border-emerald-500">
-                        <select id="type" onchange="syncUI()" class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-white">
-                            <option value="Cheltuială">OPEX (Cheltuială Unică)</option>
-                            <option value="Cheltuială Fixă (Lunară)">FIXED (Chirie/Rată/Fixe)</option>
-                            <option value="Venit">REVENUE (Venit)</option>
-                            <option value="Investiție">CAPEX (Investiție)</option>
-                        </select>
-                        <select id="category" class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-white"></select>
+        <div id="page-input" class="space-y-6 max-w-2xl mx-auto">
+            <div class="glass p-6 shadow-xl">
+                <h2 class="text-xl font-black mb-6 text-blue-400 tracking-tight uppercase italic">Alocare Capital</h2>
+                <form id="financeForm" onsubmit="handleForm(event)" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="date" id="date" required class="bg-slate-800 p-3 rounded-lg border border-slate-700 outline-none focus:border-blue-500">
+                        <input type="number" id="amount" step="0.01" placeholder="Suma (RON)" required class="bg-slate-800 p-3 rounded-lg border border-slate-700 font-bold text-emerald-400 outline-none">
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <select id="classType" class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-white">
-                            <option value="Nevoie">NEED (Supraviețuire)</option>
-                            <option value="Dorință">WANT (Răsfăț)</option>
-                            <option value="Creștere">GROWTH (Viitor)</option>
+                    <div class="grid grid-cols-2 gap-4">
+                        <select id="type" onchange="syncUI()" class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <option value="Venit Fix (Salariu)">Salariu (Fix)</option>
+                            <option value="Venit">Bonus/Alte Venituri</option>
+                            <option value="Freelance">Freelance Income</option>
+                            <option value="Cheltuială Fixă (Lunară)">Fixe (Chirie/Rată/Abon)</option>
+                            <option value="Cheltuială">Cheltuială Operativă</option>
+                            <option value="Investiție">Investiție / Economii</option>
+                            <option value="Cheltuială Viitoare">Planificată (Viitor)</option>
                         </select>
-                        <div class="flex items-center gap-3 bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <span class="text-xs text-slate-500 uppercase font-bold">Importanță:</span>
+                        <select id="category" class="bg-slate-800 p-3 rounded-lg border border-slate-700"></select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <select id="classType" class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <option value="Nevoie">NEED (Esențial)</option>
+                            <option value="Dorință">WANT (Plăcere)</option>
+                            <option value="Creștere">GROWTH (Investiție)</option>
+                        </select>
+                        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex items-center gap-2">
+                            <span class="text-xs text-slate-500">ROI:</span>
                             <input type="range" id="importance" min="1" max="5" value="3" class="flex-grow">
-                            <span id="impLabel" class="font-bold text-sky-400">3</span>
+                            <span id="impVal" class="font-bold text-blue-400">3</span>
                         </div>
                     </div>
-                    <input type="text" id="reason" placeholder="Justificare strategică (De ce?)..." class="w-full bg-slate-800 p-3 rounded-lg border border-slate-700 outline-none focus:border-sky-500">
-                    <textarea id="description" placeholder="Detalii suplimentare..." class="w-full bg-slate-800 p-3 rounded-lg border border-slate-700 h-20"></textarea>
-                    <button type="submit" id="subBtn" class="w-full bg-sky-600 hover:bg-sky-500 py-4 rounded-xl font-black text-white tracking-widest transition-all shadow-lg shadow-sky-600/20">EXECUTE TRANSACTION</button>
+                    <input type="text" id="reason" placeholder="Justificare (De ce ai cumpărat asta?)..." class="w-full bg-slate-800 p-3 rounded-lg border border-slate-700 outline-none focus:border-blue-500">
+                    <button type="submit" id="subBtn" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-black text-white tracking-widest transition-all">EXECUTE TRANSACTION</button>
                 </form>
-                <div id="status" class="text-center mt-4 font-bold hidden"></div>
             </div>
         </div>
 
         <div id="page-strategy" class="view-hidden space-y-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="card"><p class="text-xs text-slate-500 uppercase font-bold mb-1">Health Score</p><div class="flex items-baseline gap-1"><span class="stat-value text-sky-400" id="hScore">0</span><span class="text-xs opacity-50">/100</span></div></div>
-                <div class="card"><p class="text-xs text-slate-500 uppercase font-bold mb-1">Op. Margin</p><div class="flex items-baseline gap-1"><span class="stat-value text-emerald-400" id="hMargin">0</span><span class="text-xs opacity-50">%</span></div></div>
-                <div class="card border-rose-900/30"><p class="text-xs text-slate-500 uppercase font-bold mb-1">Waste Tax</p><p class="stat-value text-rose-500" id="hWaste">0</p></div>
-                <div class="card border-sky-900/30"><p class="text-xs text-slate-500 uppercase font-bold mb-1">Rem. Target</p><p class="stat-value text-white" id="hTarget">0</p></div>
+                <div class="glass p-4 border-l-4 border-blue-500"><p class="text-xs text-slate-500 font-bold uppercase">Cashflow Margin</p><p class="text-2xl font-black text-blue-400" id="hMargin">0%</p></div>
+                <div class="glass p-4 border-l-4 border-rose-500"><p class="text-xs text-slate-500 font-bold uppercase">Waste Tax</p><p class="text-2xl font-black text-rose-500" id="hWaste">0</p></div>
+                <div class="glass p-4 border-l-4 border-emerald-500"><p class="text-xs text-slate-500 font-bold uppercase">True ROI</p><p class="text-2xl font-black text-emerald-500" id="hRoi">0</p></div>
+                <div class="glass p-4 border-l-4 border-slate-500"><p class="text-xs text-slate-500 font-bold uppercase">Target Rem.</p><p class="text-2xl font-black text-white" id="hTarget">0</p></div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="card lg:col-span-2">
-                    <h3 class="font-bold mb-4 text-slate-400 uppercase text-xs tracking-widest">Revenue vs OPEX Trends</h3>
+                <div class="glass p-6 lg:col-span-2">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase mb-4 tracking-widest">Revenue vs OPEX Trends (Annual)</h3>
                     <div class="h-64"><canvas id="mainChart"></canvas></div>
                 </div>
-                <div class="card">
-                    <h3 class="font-bold mb-4 text-slate-400 uppercase text-xs tracking-widest">Capital Clusters</h3>
+                <div class="glass p-6">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase mb-4 tracking-widest">Capital Clusters</h3>
                     <div class="h-64"><canvas id="clusterChart"></canvas></div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="card">
-                    <h3 class="font-bold mb-4 text-slate-400 uppercase text-xs tracking-widest">Operational Calendar</h3>
+                <div class="glass p-6">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase mb-4 tracking-widest">Operational Calendar</h3>
                     <div id="calGrid" class="grid grid-cols-7 gap-2"></div>
                 </div>
-                <div class="card">
-                    <h3 class="font-bold mb-4 text-slate-400 uppercase text-xs tracking-widest">Weekly Pacing</h3>
-                    <div class="h-64"><canvas id="weeklyChart"></canvas></div>
+                <div class="glass p-6">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase mb-4 tracking-widest">Upcoming Financial Load</h3>
+                    <div class="h-64"><canvas id="upcomingChart"></canvas></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxsPgZ1e0nGuU6YR0GJYm8fstYyo6OhxtjfXOmPyGrwFSTVDePFOMsFB4oGlacpMXNLnQ/exec"; // <- FOARTE IMPORTANT: Pune link-ul nou de la Deploy!
-
+        const API_URL = "https://script.google.com/macros/s/AKfycbxsPgZ1e0nGuU6YR0GJYm8fstYyo6OhxtjfXOmPyGrwFSTVDePFOMsFB4oGlacpMXNLnQ/exec";
         const CATS = {
-            "Cheltuială": ["Mâncare", "Transport", "Ieșiri", "Haine", "Diverse"],
-            "Cheltuială Fixă (Lunară)": ["Chirie", "Credit/Rată", "Utilități", "Abonamente", "Facturi"],
-            "Venit": ["Salariu", "Freelance", "Bonus", "Altele"],
-            "Investiție": ["Bursă/ETF", "Crypto", "Fond de Urgență", "Business"],
-            "Cheltuială Viitoare": ["Mașină (RCA/Revizii)", "Nunți", "Vacanțe", "Asigurări"]
+            "Venit Fix (Salariu)": ["Salariu Bază"],
+            "Venit": ["Bonus", "Cadou", "Altele"],
+            "Freelance": ["Proiect X", "Client Y", "Consultantă"],
+            "Cheltuială Fixă (Lunară)": ["Chirie", "Credit/Rată", "Utilități", "Internet/Tel", "Abonamente/GYM"],
+            "Cheltuială": ["Mâncare", "Transport", "Ieșiri/Restaurante", "Sănătate", "Hobby", "Haine", "Diverse"],
+            "Investiție": ["Bursă/ETF", "Crypto", "Fond Freelancing", "Educație"],
+            "Cheltuială Viitoare": ["Mașină (RCA/Service)", "Nunți", "Vacanțe", "Asigurări", "Taxe Anuale"]
         };
 
         function showPage(p) {
             document.getElementById('page-input').classList.toggle('view-hidden', p !== 'input');
             document.getElementById('page-strategy').classList.toggle('view-hidden', p !== 'strategy');
-            document.getElementById('btn-input').className = p === 'input' ? "px-6 py-2 rounded-lg font-bold bg-sky-600 text-white shadow-lg" : "px-6 py-2 rounded-lg font-bold text-slate-400";
-            document.getElementById('btn-strategy').className = p === 'strategy' ? "px-6 py-2 rounded-lg font-bold bg-sky-600 text-white shadow-lg" : "px-6 py-2 rounded-lg font-bold text-slate-400";
+            document.getElementById('btn-input').className = p === 'input' ? "flex-1 py-3 rounded-xl font-bold transition-all bg-blue-600 text-white" : "flex-1 py-3 rounded-xl font-bold transition-all text-slate-400";
+            document.getElementById('btn-strategy').className = p === 'strategy' ? "flex-1 py-3 rounded-xl font-bold transition-all bg-blue-600 text-white" : "flex-1 py-3 rounded-xl font-bold transition-all text-slate-400";
             if(p === 'strategy') loadData();
         }
 
@@ -120,55 +115,51 @@
             const type = document.getElementById('type').value;
             const catSel = document.getElementById('category');
             catSel.innerHTML = (CATS[type] || CATS["Cheltuială"]).map(c => `<option value="${c}">${c}</option>`).join('');
+            const classSel = document.getElementById('classType');
+            if(type.includes('Venit') || type === 'Freelance' || type === 'Investiție') classSel.value = 'Creștere';
         }
         syncUI();
         document.getElementById('date').valueAsDate = new Date();
-        document.getElementById('importance').oninput = e => document.getElementById('impLabel').innerText = e.target.value;
+        document.getElementById('importance').oninput = e => document.getElementById('impVal').innerText = e.target.value;
 
-        // --- CHARTS INSTANCES (PENTRU RESETARE LA REFRESH) ---
-        let mainChart, clusterChart, weeklyChart;
+        let charts = {};
 
         async function loadData() {
-            try {
-                const res = await fetch(API_URL);
-                const d = await res.json();
-                
-                document.getElementById('hScore').innerText = d.summary.health;
-                document.getElementById('hMargin').innerText = d.summary.margin;
-                document.getElementById('hWaste').innerText = d.audit.waste + " RON";
-                document.getElementById('hTarget').innerText = (d.summary.target - d.summary.income) + " RON";
+            const res = await fetch(API_URL);
+            const d = await res.json();
+            
+            document.getElementById('hMargin').innerText = d.summary.margin + "%";
+            document.getElementById('hWaste').innerText = d.audit.waste + " RON";
+            document.getElementById('hRoi').innerText = d.audit.roi + " RON";
+            document.getElementById('hTarget').innerText = (d.summary.target - d.summary.income).toFixed(0) + " RON";
 
-                renderCharts(d);
-                renderCalendar(d.calendar);
-            } catch (err) { console.error("EROARE LOAD:", err); }
+            renderCharts(d);
+            renderCalendar(d.calendar);
         }
 
         function renderCharts(d) {
-            const ctx1 = document.getElementById('mainChart').getContext('2d');
-            if(mainChart) mainChart.destroy();
-            mainChart = new Chart(ctx1, {
+            if(charts.main) charts.main.destroy();
+            charts.main = new Chart(document.getElementById('mainChart'), {
                 type: 'line',
                 data: { labels: d.charts.labels, datasets: [
-                    { label: 'Revenue', data: d.charts.monthly, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 },
-                    { label: 'OPEX', data: d.charts.monthlyExp, borderColor: '#f43f5e', tension: 0.3 }
+                    { label: 'Revenue', data: d.charts.incArr, borderColor: '#10b981', tension: 0.3, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.05)' },
+                    { label: 'OPEX', data: d.charts.expArr, borderColor: '#f43f5e', tension: 0.3 }
                 ]},
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#64748b' } } } }
             });
 
-            const ctx2 = document.getElementById('clusterChart').getContext('2d');
-            if(clusterChart) clusterChart.destroy();
-            clusterChart = new Chart(ctx2, {
+            if(charts.cluster) charts.cluster.destroy();
+            charts.cluster = new Chart(document.getElementById('clusterChart'), {
                 type: 'doughnut',
                 data: { labels: Object.keys(d.charts.clusters), datasets: [{ data: Object.values(d.charts.clusters), backgroundColor: ['#38bdf8', '#fbbf24', '#f43f5e', '#10b981'], borderWidth: 0 }]},
-                options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false } } }
+                options: { responsive: true, maintainAspectRatio: false, cutout: '85%', plugins: { legend: { display: false } } }
             });
 
-            const ctx3 = document.getElementById('weeklyChart').getContext('2d');
-            if(weeklyChart) weeklyChart.destroy();
-            weeklyChart = new Chart(ctx3, {
+            if(charts.up) charts.up.destroy();
+            charts.up = new Chart(document.getElementById('upcomingChart'), {
                 type: 'bar',
-                data: { labels: Object.keys(d.charts.weekly), datasets: [{ label: 'Burn Rate', data: Object.values(d.charts.weekly), backgroundColor: '#334155', borderRadius: 5 }]},
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+                data: { labels: Object.keys(d.charts.upcoming), datasets: [{ data: Object.values(d.charts.upcoming), backgroundColor: '#6366f1', borderRadius: 4 }]},
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
             });
         }
 
@@ -177,39 +168,25 @@
             grid.innerHTML = "";
             const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
             for(let i=1; i<=daysInMonth; i++) {
-                const dData = cal[i] || { expense: 0 };
+                const dayData = cal[i] || { expense: 0, income: 0 };
                 const isToday = i === new Date().getDate();
-                grid.innerHTML += `<div class="cal-day ${isToday ? 'cal-today' : ''}"><p class="font-bold opacity-30">${i}</p>${dData.expense > 0 ? `<p class="text-rose-400 font-bold truncate">-${dData.expense.toFixed(0)}</p>` : ''}</div>`;
+                grid.innerHTML += `<div class="cal-day ${isToday ? 'border-blue-500 bg-blue-500/10' : ''}"><p class="opacity-30">${i}</p>${dayData.expense > 0 ? `<p class="text-rose-500 font-bold">-${dayData.expense.toFixed(0)}</p>` : ''}${dayData.income > 0 ? `<p class="text-emerald-500 font-bold">+${dayData.income.toFixed(0)}</p>` : ''}</div>`;
             }
         }
 
         async function handleForm(e) {
             e.preventDefault();
             const btn = document.getElementById('subBtn');
-            const status = document.getElementById('status');
             btn.disabled = true; btn.innerText = "EXECUTING...";
-            status.className = "text-center mt-4 font-bold text-sky-400 block";
-            status.innerText = "Auditarea tranzacției...";
-            
             const payload = {
                 date: document.getElementById('date').value, type: document.getElementById('type').value,
                 category: document.getElementById('category').value, amount: document.getElementById('amount').value,
                 classType: document.getElementById('classType').value, importance: document.getElementById('importance').value,
-                reason: document.getElementById('reason').value, description: document.getElementById('description').value
+                reason: document.getElementById('reason').value
             };
-
-            try {
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-                status.innerText = "Success. Capital Alocat.";
-                status.classList.replace('text-sky-400', 'text-emerald-400');
-                document.getElementById('financeForm').reset();
-                document.getElementById('date').valueAsDate = new Date();
-                setTimeout(() => { status.classList.add('hidden'); btn.disabled = false; btn.innerText = "EXECUTE TRANSACTION"; }, 2000);
-            } catch (err) {
-                status.innerText = "Error. System Failure.";
-                status.classList.replace('text-sky-400', 'text-rose-400');
-                btn.disabled = false; btn.innerText = "RETRY TRANSACTION";
-            }
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            alert("Tranzacție Executată.");
+            location.reload();
         }
     </script>
 </body>
