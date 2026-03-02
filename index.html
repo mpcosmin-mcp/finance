@@ -3,98 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial OS | Pro</title>
+    <title>Financial OS | CFO View</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+        .cal-day { min-height: 80px; padding: 4px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: 6px; font-size: 0.75rem; }
+        .cal-day.today { border-color: #0ea5e9; background: rgba(14, 165, 233, 0.1); }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <div class="max-w-5xl mx-auto space-y-6">
+    <div class="max-w-6xl mx-auto space-y-6">
         <header class="text-center py-4">
-            <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-500">
+            <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
                 Financial OS
             </h1>
-            <p class="text-slate-400 text-sm mt-1">Smart Forecasting & Pattern Recognition</p>
+            <p class="text-slate-400 text-sm mt-1">Cashflow Mapping & Weekly Pacing</p>
         </header>
 
-        <div class="glass p-6 rounded-2xl grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="col-span-1 md:col-span-2">
-                <h2 class="text-xl font-semibold mb-2 text-slate-200">Unde se duc banii (Clustere Luna Curentă)</h2>
-                <div class="h-64 relative w-full flex justify-center">
-                    <canvas id="clusterChart"></canvas>
+        <div class="glass p-6 rounded-2xl">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-slate-200">Calendar Cashflow (Luna Curentă)</h2>
+                <div class="flex gap-4 mt-2 md:mt-0 text-sm">
+                    <div class="bg-slate-800 px-4 py-2 rounded-lg border border-slate-700">
+                        <span class="text-slate-400">Target Rămas: </span>
+                        <span class="font-bold text-emerald-400" id="remTarget">0 €</span>
+                    </div>
+                    <div class="bg-slate-800 px-4 py-2 rounded-lg border border-slate-700">
+                        <span class="text-slate-400">Necesar / Săptămână: </span>
+                        <span class="font-bold text-blue-400" id="weekTarget">0 €</span>
+                    </div>
                 </div>
             </div>
-            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 flex flex-col justify-center">
-                <h3 class="text-sm text-slate-400 uppercase tracking-wider mb-2">Proiecție Final de An (EOY)</h3>
-                <p class="text-3xl font-bold text-emerald-400 mb-1" id="eoyProjection">0 €</p>
-                <p class="text-xs text-slate-500 mb-4">Calculat pe baza patternului tău curent de economisire, minus cheltuielile viitoare programate.</p>
-                
-                <h3 class="text-sm text-slate-400 uppercase tracking-wider mb-2">Media de Salvare Lunară</h3>
-                <p class="text-xl font-bold text-blue-400" id="avgMonthlyNet">0 €</p>
+
+            <div class="cal-grid mb-1 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <div>Luni</div><div>Marți</div><div>Mier</div><div>Joi</div><div>Vin</div><div>Sâm</div><div>Dum</div>
             </div>
+            <div id="calendarGrid" class="cal-grid">
+                </div>
         </div>
 
-        <div class="glass p-6 rounded-2xl">
-            <h2 class="text-xl font-semibold mb-4 text-slate-200">Responsabilități Viitoare (Sinking Funds)</h2>
-            <p class="text-sm text-slate-400 mb-4">Total programat: <span id="totalFuture" class="font-bold text-yellow-400">0 €</span></p>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-slate-700 text-slate-400 text-sm">
-                            <th class="pb-2">Eveniment/Cheltuială</th>
-                            <th class="pb-2">Dată Scadentă</th>
-                            <th class="pb-2">Sumă Totală</th>
-                            <th class="pb-2 text-right">Necesar Lunar de Salvat</th>
-                        </tr>
-                    </thead>
-                    <tbody id="futureTableBody" class="text-sm">
-                        </tbody>
-                </table>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass p-6 rounded-2xl">
+                <h2 class="text-xl font-semibold mb-2 text-slate-200">Distribuție Clustere</h2>
+                <div class="h-64 relative w-full flex justify-center"><canvas id="clusterChart"></canvas></div>
             </div>
-        </div>
-
-        <div class="glass p-6 rounded-2xl">
-            <h2 class="text-xl font-semibold mb-4 text-slate-200">Înregistrează Date</h2>
-            <form id="financeForm" onsubmit="submitForm(event)" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Dată (Curentă sau Scadentă)</label>
-                        <input type="date" id="date" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white">
+            
+            <div class="glass p-6 rounded-2xl flex flex-col justify-center">
+                <h2 class="text-xl font-semibold mb-4 text-slate-200">Formular Tranzacție</h2>
+                <form id="financeForm" onsubmit="submitForm(event)" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="date" id="date" required class="p-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm">
+                        <input type="number" id="amount" step="0.01" min="0" required class="p-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm" placeholder="Sumă (€/RON)">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Sumă (€/RON)</label>
-                        <input type="number" id="amount" step="0.01" min="0" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Tip</label>
-                        <select id="type" onchange="updateCategories()" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white">
-                            <option value="Cheltuială">Cheltuială (Curentă)</option>
+                    <div class="grid grid-cols-2 gap-4">
+                        <select id="type" onchange="updateCategories()" required class="p-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm">
+                            <option value="Cheltuială">Cheltuială</option>
                             <option value="Venit">Venit</option>
-                            <option value="Investiție">Investiție/Economii</option>
-                            <option value="Cheltuială Viitoare">Cheltuială Viitoare (Programată)</option>
+                            <option value="Investiție">Investiție</option>
+                            <option value="Cheltuială Viitoare">Cheltuială Viitoare</option>
                         </select>
+                        <select id="category" required class="p-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm"></select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Categorie / Cluster</label>
-                        <select id="category" required class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white"></select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-1">Descriere</label>
-                    <input type="text" id="description" class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white" placeholder="Detalii...">
-                </div>
-                <button type="submit" id="submitBtn" class="w-full py-3 mt-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-colors">Salvează</button>
-                <div id="statusMessage" class="text-center mt-2 hidden"></div>
-            </form>
+                    <input type="text" id="description" class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm" placeholder="Descriere opțională...">
+                    <button type="submit" id="submitBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-colors shadow-lg">Înregistrează</button>
+                    <div id="statusMessage" class="text-center text-sm mt-2 hidden"></div>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby8Z_w6j8bhwBj4paFfXpDR7JBFleOzG8zdqOsyJApvUj2fIfhbzJa9r2zN6gKNurOVbg/exec"; // PUNE LINK-UL NOU AICI!
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby8Z_w6j8bhwBj4paFfXpDR7JBFleOzG8zdqOsyJApvUj2fIfhbzJa9r2zN6gKNurOVbg/exec";
 
         const categoriesData = {
             "Cheltuială": ["Chirie", "Taxe/Facturi", "Mâncare", "Transport Zilnic", "Sănătate", "Ieșiri", "Hobby", "Haine", "Diverse"],
@@ -104,7 +87,6 @@
         };
 
         let clusterChartInstance = null;
-
         document.getElementById('date').valueAsDate = new Date();
 
         function updateCategories() {
@@ -112,109 +94,105 @@
             const categorySelect = document.getElementById('category');
             categorySelect.innerHTML = ""; 
             categoriesData[type].forEach(cat => {
-                let option = document.createElement("option");
-                option.value = cat; option.text = cat;
-                categorySelect.appendChild(option);
+                let opt = document.createElement("option"); opt.value = cat; opt.text = cat; categorySelect.appendChild(opt);
             });
         }
         updateCategories();
+
+        // GENERARE CALENDAR
+        function buildCalendar(dailyData) {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = "";
+            
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const todayDate = now.getDate();
+            
+            let firstDay = new Date(year, month, 1).getDay();
+            firstDay = firstDay === 0 ? 6 : firstDay - 1; // Ajustare pentru Luni=0
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Zile goale la început
+            for(let i=0; i<firstDay; i++) {
+                grid.innerHTML += `<div class="cal-day opacity-30"></div>`;
+            }
+
+            // Zilele lunii
+            for(let d=1; d<=daysInMonth; d++) {
+                let isToday = (d === todayDate) ? 'today' : '';
+                let content = `<div class="cal-day ${isToday} flex flex-col relative"><span class="text-slate-400 font-bold mb-1">${d}</span>`;
+                
+                if(dailyData[d]) {
+                    if(dailyData[d].income > 0) content += `<div class="text-emerald-400 font-bold">+${dailyData[d].income}</div>`;
+                    if(dailyData[d].expense > 0) content += `<div class="text-red-400 font-bold">-${dailyData[d].expense}</div>`;
+                    
+                    // Puncte colorate pentru evenimente
+                    if(dailyData[d].events.length > 0) {
+                        content += `<div class="flex gap-1 mt-auto pt-1">`;
+                        dailyData[d].events.forEach(ev => {
+                            let color = ev.type === 'Venit' ? 'bg-emerald-400' : 'bg-red-400';
+                            content += `<div class="w-2 h-2 rounded-full ${color}" title="${ev.cat}: ${ev.amt}"></div>`;
+                        });
+                        content += `</div>`;
+                    }
+                }
+                content += `</div>`;
+                grid.innerHTML += content;
+            }
+        }
 
         async function fetchDashboardData() {
             try {
                 const response = await fetch(WEB_APP_URL);
                 const data = await response.json();
                 
-                // 1. Update Forecasting
-                document.getElementById('eoyProjection').innerText = data.forecast.projectedEOY + " €";
-                document.getElementById('avgMonthlyNet').innerText = "+ " + data.forecast.avgMonthlyNet + " €";
-                document.getElementById('totalFuture').innerText = data.forecast.totalFuture + " €";
+                // Update Strategie
+                document.getElementById('remTarget').innerText = data.strategic.remainingMonthlyTarget + " €";
+                document.getElementById('weekTarget').innerText = "~ " + data.strategic.weeklyIncomeTarget + " €";
+                
+                // Generează Calendarul
+                buildCalendar(data.calendar);
 
-                // 2. Update Future Expenses Table (Sinking Funds)
-                const tbody = document.getElementById('futureTableBody');
-                tbody.innerHTML = "";
-                data.futureLiabilities.forEach(item => {
-                    let dateStr = new Date(item.date).toLocaleDateString('ro-RO');
-                    tbody.innerHTML += `
-                        <tr class="border-b border-slate-700/50">
-                            <td class="py-3 text-slate-200">${item.desc}</td>
-                            <td class="py-3 text-slate-400">${dateStr}</td>
-                            <td class="py-3 font-semibold text-yellow-400">${item.amount} €</td>
-                            <td class="py-3 text-right font-bold text-cyan-400">${item.monthlyNeed} € / lună</td>
-                        </tr>
-                    `;
+                // Render Chart
+                if(clusterChartInstance) clusterChartInstance.destroy();
+                const ctx = document.getElementById('clusterChart').getContext('2d');
+                clusterChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(data.clusters),
+                        datasets: [{ data: Object.values(data.clusters), backgroundColor: ['#ef4444', '#f59e0b', '#8b5cf6', '#10b981'], borderWidth: 0 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: {color: '#cbd5e1'} } } }
                 });
 
-                // 3. Render Clusters Chart
-                renderChart(data.clusters);
-
-            } catch (error) {
-                console.error("Eroare:", error);
-            }
-        }
-
-        function renderChart(clusterData) {
-            const ctx = document.getElementById('clusterChart').getContext('2d');
-            
-            if(clusterChartInstance) clusterChartInstance.destroy();
-
-            clusterChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(clusterData),
-                    datasets: [{
-                        data: Object.values(clusterData),
-                        backgroundColor: ['#ef4444', '#f59e0b', '#8b5cf6', '#10b981'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { color: '#cbd5e1' } }
-                    },
-                    cutout: '70%'
-                }
-            });
+            } catch (error) { console.error("Eroare:", error); }
         }
 
         fetchDashboardData();
 
         function submitForm(event) {
             event.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('statusMessage');
-            
+            const btn = document.getElementById('submitBtn'); const status = document.getElementById('statusMessage');
             btn.innerText = "Se salvează..."; btn.disabled = true;
-            status.className = "text-center text-sm mt-2 text-cyan-400 block";
-            status.innerText = "Sincronizare cu Google Sheets...";
+            status.className = "text-center text-sm mt-2 text-cyan-400 block"; status.innerText = "Se trimite...";
 
             const payload = {
-                date: document.getElementById('date').value,
-                type: document.getElementById('type').value,
-                category: document.getElementById('category').value,
-                amount: document.getElementById('amount').value,
+                date: document.getElementById('date').value, type: document.getElementById('type').value,
+                category: document.getElementById('category').value, amount: document.getElementById('amount').value,
                 description: document.getElementById('description').value
             };
 
             fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
             .then(() => {
-                status.innerText = "Salvat! Pattern-urile au fost actualizate.";
-                status.classList.replace("text-cyan-400", "text-emerald-400");
-                document.getElementById('financeForm').reset();
-                document.getElementById('date').valueAsDate = new Date();
-                updateCategories();
-                fetchDashboardData(); // Reîmprospătează vizualul
-                setTimeout(() => status.classList.add("hidden"), 4000);
+                status.innerText = "Salvat!"; status.classList.replace("text-cyan-400", "text-emerald-400");
+                document.getElementById('financeForm').reset(); document.getElementById('date').valueAsDate = new Date();
+                updateCategories(); fetchDashboardData(); 
+                setTimeout(() => status.classList.add("hidden"), 3000);
             })
-            .catch((err) => {
-                status.innerText = "Eroare la salvare.";
-                status.classList.replace("text-cyan-400", "text-red-500");
-            })
-            .finally(() => { btn.innerText = "Salvează"; btn.disabled = false; });
+            .catch(() => { status.innerText = "Eroare!"; status.classList.replace("text-cyan-400", "text-red-500"); })
+            .finally(() => { btn.innerText = "Înregistrează"; btn.disabled = false; });
         }
     </script>
 </body>
 </html>
-
